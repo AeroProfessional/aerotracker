@@ -2508,7 +2508,9 @@ def parse_cv(cv_text, candidate_name):
         r"outstation|line maintenance|assessment|damage|evaluation|inspection|"
         r"principles|procedures|standards|regulations|compliance|"
         r"shows?|display|exhibition|expo|simulator|simulation|"
-        r"sector|supply|leasing|distribution|optimis[ae]tion|optimiz[ae]tion)\b",
+        r"sector|supply|leasing|distribution|optimis[ae]tion|optimiz[ae]tion|"
+        r"flight\s+time|total\s+hours|flying\s+hours|knowledge\s+of|excellent|"
+        r"completion\s+date|qualification|certificate)\b",
         re.IGNORECASE
     )
     # Keywords that confirm something IS a real company name
@@ -2822,13 +2824,31 @@ def parse_cv(cv_text, candidate_name):
         # e.g. "G450, MSN 4088, Reg.: B"
         if re.search(r"\bMSN\s+\d+\b|\bReg\.\s*:", raw, re.IGNORECASE):
             return ""
+        # Reject "N years of [airline/aviation] experience" — experience descriptions, not companies
+        # e.g. "26 years of airline experience"
+        if re.match(r"^\d+\s+years?\s+of\b", raw, re.IGNORECASE):
+            return ""
+        # Reject "Job Title (Company Name)" when prefix is a role word — extract just company
+        # e.g. "Product Category Manager (KIKA Group" → "KIKA Group"
+        _paren_m = re.match(r"^(.+?)\s*\((.+?)\)?$", raw)
+        if _paren_m:
+            _paren_pre  = _paren_m.group(1).strip()
+            _paren_post = _paren_m.group(2).strip()
+            _ROLE_PAREN_RE = re.compile(
+                r"\b(manager|director|officer|coordinator|instructor|executive|analyst|"
+                r"specialist|consultant|supervisor|administrator|advisor|technician|"
+                r"engineer|pilot|captain|crew|head|lead|chief)\b",
+                re.IGNORECASE
+            )
+            if _ROLE_PAREN_RE.search(_paren_pre) and _paren_post and len(_paren_post) >= 3:
+                raw = _paren_post
         # Reject "Label: Value" patterns — CV form fields, not company names
         # e.g. "Aircraft: C68A", "Base: Dubai", "Aircraft Type: B737"
         # Also rejects description labels: "Total Aviation Work Experience: 13 years"
         if ": " in raw:
             _before_colon = raw.split(": ")[0].strip()
             _DESC_LABEL_RE = re.compile(
-                r"\b(experience|history|background|summary|overview|total|years?)\b",
+                r"\b(experience|history|background|summary|overview|total|years?|date|completion)\b",
                 re.IGNORECASE
             )
             if len(_before_colon.split()) <= 2 or _DESC_LABEL_RE.search(_before_colon):
@@ -4731,6 +4751,29 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
                                    if (s.get("name") or "").strip().lower() not in _all_country_names]
 
         skills_objs = non_country + nat_skills + uncat_country + lic_skills
+
+        # Safety net: nationality must survive for all profiles.
+        # If the assembled list has no nationality adjective, rescue one from the
+        # ORIGINAL Tracker record — prevents the profile going to [] skills when the
+        # only skill is a nationality adjective that didn't land in any bucket.
+        _has_nat_adj = any(
+            (s.get("name") or "").strip().lower() in NATIONALITY_ADJECTIVES
+            for s in skills_objs
+        )
+        _has_country = any(
+            (s.get("name") or "").strip().lower() in _all_country_names
+            for s in skills_objs
+        )
+        if not _has_nat_adj and not _has_country:
+            _rescue_nat = next(
+                (s for s in _original_qs
+                 if (s.get("name") or "").strip().lower() in NATIONALITY_ADJECTIVES),
+                None
+            )
+            if _rescue_nat:
+                skills_objs.append(_rescue_nat)
+                print(f"  ℹ  Rescued nationality '{_rescue_nat['name']}' — would have been lost")
+
         # Final dedup — by skill ID only. Same country can appear twice legitimately:
         # once as nationality (area 43) and once as licence country (area 39).
         # Free-text skills (id=0) dedup by name instead.
