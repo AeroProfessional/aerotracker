@@ -1,12 +1,11 @@
 name: AeroTracker — Process Registrations
 
 on:
-  schedule:
-    # Run every hour (processes any new registration emails)
-    - cron: "0 * * * *"
-    # Run daily at 15:00 UTC for the no-CV report
-    - cron: "0 15 * * *"
-  workflow_dispatch:   # allows manual trigger from GitHub Actions tab
+  # Scheduled runs disabled until Emily enables them
+  # schedule:
+  #   - cron: "0 * * * *"
+  #   - cron: "0 15 * * *"
+  workflow_dispatch:   # manual trigger only — run from GitHub Actions tab
 
 jobs:
 
