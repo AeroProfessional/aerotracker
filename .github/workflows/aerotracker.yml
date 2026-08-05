@@ -1,0 +1,83 @@
+name: AeroTracker — Process Registrations
+
+on:
+  schedule:
+    # Run every hour (processes any new registration emails)
+    - cron: "0 * * * *"
+    # Run daily at 15:00 UTC for the no-CV report
+    - cron: "0 15 * * *"
+  workflow_dispatch:   # allows manual trigger from GitHub Actions tab
+
+jobs:
+
+  # ── Process new registration emails ─────────────────────────────────────────
+  process-registrations:
+    name: Process new registrations
+    runs-on: ubuntu-latest
+    # Only runs on the hourly schedule and manual triggers (not the 3pm one)
+    if: github.event.schedule != '0 15 * * *' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies (Tesseract OCR)
+        run: sudo apt-get install -y tesseract-ocr
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run AeroTracker
+        env:
+          TRACKER_BEARER: ${{ secrets.TRACKER_BEARER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
+          # TEST_MODE is set to 0 here (full run — no limit)
+          # Change to e.g. TEST_MODE=5 during testing
+          TEST_MODE: "0"
+        run: python update_tracker.py
+
+      - name: Commit updated state files
+        run: |
+          git config user.name  "AeroTracker Bot"
+          git config user.email "support@aeroprofessional.com"
+          git add pending_cv.json tracker_processed.json tracker_cache.json || true
+          git diff --staged --quiet || git commit -m "chore: update state files [skip ci]"
+          git push || true
+
+  # ── Daily no-CV report at 3pm ────────────────────────────────────────────────
+  no-cv-report:
+    name: Daily no-CV report (3pm)
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 15 * * *' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run no-CV report
+        env:
+          TRACKER_BEARER: ${{ secrets.TRACKER_BEARER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: python no_cv_report.py
+
+      - name: Commit updated watchlist
+        run: |
+          git config user.name  "AeroTracker Bot"
+          git config user.email "support@aeroprofessional.com"
+          git add pending_cv.json || true
+          git diff --staged --quiet || git commit -m "chore: update pending CV watchlist [skip ci]"
+          git push || true

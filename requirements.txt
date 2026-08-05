@@ -1,0 +1,21 @@
+# AeroTracker — Python dependencies
+# Install with: pip install -r requirements.txt --break-system-packages
+#
+# On GitHub Actions the workflow installs these automatically.
+# On Windows you also need Tesseract-OCR installed separately:
+#   https://github.com/UB-Mannheim/tesseract/wiki
+
+requests>=2.31.0
+pymupdf>=1.23.0          # fitz — PDF reading and rendering
+pytesseract>=0.3.10      # OCR for image-based CVs
+Pillow>=10.0.0           # PIL — image processing for OCR
+pdfminer.six>=20221105   # PDF text extraction fallback
+pdfplumber>=0.10.0       # PDF table extraction fallback
+python-docx>=1.1.0       # .docx CV reading
+
+# Optional — only needed for Graph API email access
+# msal>=1.26.0
+
+# Optional — only needed on Windows for Outlook COM integration
+# pywin32>=306
+# playwright>=1.40.0

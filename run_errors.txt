@@ -1,0 +1,135 @@
+
+============================================================
+Mustafa Abdo
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3400, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1753, in process_one
+    if is_flight_deck:
+       ^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_flight_deck' where it is not associated with a value
+
+
+============================================================
+Maria Georgia Tsolaki
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3400, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1753, in process_one
+    if is_flight_deck:
+       ^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_flight_deck' where it is not associated with a value
+
+
+============================================================
+Yasar Demirel
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3400, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1753, in process_one
+    if is_flight_deck:
+       ^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_flight_deck' where it is not associated with a value
+
+
+============================================================
+Uzair Rehman NIZAMI
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3400, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1753, in process_one
+    if is_flight_deck:
+       ^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_flight_deck' where it is not associated with a value
+
+
+============================================================
+Haider Zaman
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3451, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1822, in process_one
+    if is_cabin_crew:
+       ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_cabin_crew' where it is not associated with a value
+
+
+============================================================
+Khalid Alomari
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3451, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1822, in process_one
+    if is_cabin_crew:
+       ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_cabin_crew' where it is not associated with a value
+
+
+============================================================
+Mohammed Shahil
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3451, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1822, in process_one
+    if is_cabin_crew:
+       ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_cabin_crew' where it is not associated with a value
+
+
+============================================================
+Ali Aljabr
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 3451, in main
+    result = process_one(name, jwt, name_index, skills_lookup, email_cand=cand,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 1822, in process_one
+    if is_cabin_crew:
+       ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'is_cabin_crew' where it is not associated with a value
+
+
+============================================================
+Manu Prasad
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 5966, in _run_one
+    result = process_one(
+             ^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 3911, in process_one
+    _preserved = next(
+                 ^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 3913, in <genexpr>
+    in nationality_skills_set),
+       ^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'nationality_skills_set' is not defined
+
+
+============================================================
+OMAR FAROQUE` KHAN
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 6288, in _run_one
+    result = process_one(
+             ^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 3090, in process_one
+    for key, rid in result:
+        ^^^^^^^^
+TypeError: cannot unpack non-iterable int object
+
+
+============================================================
+OMAR FAROQUE` KHAN
+Traceback (most recent call last):
+  File "C:\AeroTracker\update_tracker.py", line 6312, in _run_one
+    result = process_one(
+             ^^^^^^^^^^^^
+  File "C:\AeroTracker\update_tracker.py", line 3115, in process_one
+    print(f"    → Auto-selected: {best[0]} (ID {best[1]})")
+                                  ~~~~^^^
+TypeError: 'NoneType' object is not subscriptable
+
