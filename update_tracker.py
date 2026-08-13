@@ -77,6 +77,7 @@ EMAIL_LOGIN_USER  = "emily.walton@aeroprofessional.com"  # Personal account used
 SMTP_SERVER       = "smtp.office365.com"
 SMTP_PORT         = 587
 PENDING_CV_FILE   = "pending_cv.json"   # tracks candidates awaiting CV
+DAILY_LOG_FILE    = "daily_updates.json"  # tracks profiles updated each day for spot-check email
 
 # ── Email source config ────────────────────────────────────────────────────────
 # EMAIL_SOURCE: "subfolder" reads from NEW REGS TO ACTION subfolder.
@@ -90,7 +91,7 @@ EMAIL_NOT_FOUND_FOLDER = "New regs/Not Found"       # subfolder for candidates n
 # ── Run mode ───────────────────────────────────────────────────────────────────
 # TEST_MODE: process only this many candidates then stop (so you can check results).
 # Set to 0 for fully autonomous — processes ALL candidates with no human input.
-TEST_MODE         = 50    # ← test run: process 50 from REGS then stop
+TEST_MODE         = int(os.environ.get("TEST_MODE", "0"))  # 0 = process all; set env var to limit
 
 # ── Groq LLM — free cloud CV parser ───────────────────────────────────────────
 # Free — no credit card needed. One-time setup:
@@ -342,6 +343,33 @@ def save_pending_cv(resource_id, candidate_name, candidate_email):
 
     with open(PENDING_CV_FILE, "w") as f:
         json.dump(pending, f, indent=2)
+
+
+def log_daily_update(resource_id, candidate_name, job_title, employer, work_types, skills):
+    """Append a successfully updated profile to today's daily log for the spot-check email."""
+    today = datetime.date.today().isoformat()
+    try:
+        with open(DAILY_LOG_FILE, "r") as f:
+            log = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        log = {}
+    if today not in log:
+        log[today] = []
+    # Avoid duplicates within the same day
+    log[today] = [e for e in log[today] if e.get("id") != resource_id]
+    log[today].append({
+        "id":        resource_id,
+        "name":      candidate_name,
+        "job_title": job_title,
+        "employer":  employer,
+        "work_type": ", ".join(w.get("name", "") for w in work_types),
+        "skills":    [s.get("name", "") for s in skills],
+    })
+    # Keep only last 14 days to avoid file growing indefinitely
+    cutoff = (datetime.date.today() - datetime.timedelta(days=14)).isoformat()
+    log = {d: v for d, v in log.items() if d >= cutoff}
+    with open(DAILY_LOG_FILE, "w") as f:
+        json.dump(log, f, indent=2)
 
 
 # ── Tracker auth ───────────────────────────────────────────────────────────────
@@ -2537,6 +2565,14 @@ def parse_cv(cv_text, candidate_name):
         raw = re.sub(r"^EMPLOYER[.:\s]+", "", raw, flags=re.IGNORECASE).strip()
         # Strip trailing incomplete bracket / pipe characters left by parser
         raw = raw.rstrip(" []()|")
+        # Strip unclosed parenthetical at end: "Airbus Helicopters (Helibras" → "Airbus Helicopters"
+        # Also strips fully closed aircraft-type suffix: "Cargojet Airways ( B767/757 )" → "Cargojet Airways"
+        raw = re.sub(r"\s*\([^)]*$", "", raw).strip()  # unclosed "("
+        raw = re.sub(r"\s*\(\s*[^)]{1,30}\s*\)\s*$",
+                     lambda m: "" if re.search(
+                         r"\b[AB]\d{3}|CRJ|ERJ|ATR|E\d{3}|MD\d|DHC|Dash|Saab", m.group(), re.IGNORECASE
+                     ) else m.group(),
+                     raw).strip()  # closed parenthetical with aircraft type only
         # Strip leading year (e.g. "2019   Lufthansa Group" → "Lufthansa Group")
         raw = re.sub(r"^\d{4}\s+", "", raw).strip()
         # Strip leading date prefix: "May'23 to Date British Airways", "Jan 2019 – Till Date MASCO"
@@ -2723,6 +2759,7 @@ def parse_cv(cv_text, candidate_name):
             r"accountant|lawyer|attorney|doctor|physician|nurse|teacher|trainer|"
             r"developer|designer|architect|researcher|scientist|professor|lecturer|"
             r"secretary|receptionist|clerk|assistant|intern|apprentice|trainee|"
+            r"agent|handler|warehouse|ramp|ground|loader|dispatcher|controller|"
             r"owner|founder|partner|president|vice president|"
             r"ceo\b|coo\b|cfo\b|cto\b|cmo\b|cso\b|cio\b|chro\b|vp\b|"
             r"head of|chief of|director of|manager of|lead\b|principal\b|"
@@ -2730,6 +2767,18 @@ def parse_cv(cv_text, candidate_name):
             re.IGNORECASE
         )
         if _ALL_TITLE_WORDS_RE.search(raw) and not _COMPANY_ENTITY_RE.search(raw):
+            return ""
+        # Reject single generic-entity words that are never a real company name on their own.
+        # E.g. "Logistics", "Services", "Solutions" — these pass _COMPANY_ENTITY_RE but
+        # cannot identify an actual employer.
+        _STANDALONE_GENERIC_WORDS = {
+            "logistics", "services", "solutions", "transport", "transportation",
+            "trading", "technologies", "systems", "industries", "enterprises",
+            "management", "consulting", "consultancy", "advisory",
+            "international", "partners", "associates", "holdings", "ventures",
+            "properties", "construction", "manufacturing",
+        }
+        if raw.strip().lower() in _STANDALONE_GENERIC_WORDS:
             return ""
         # Extra check: strings ending in "Lead", "Head", "Chief" are job titles even when they
         # also contain "engineering" etc. (which would otherwise save them via _COMPANY_ENTITY_RE).
@@ -3994,19 +4043,25 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
     _AVIATION_RE = re.compile(
         r"\b(cabin|crew|flight|attendant|purser|steward|captain|officer|pilot|"
         r"engineer|maintenance|aviation|airline|airways|dispatcher|controller|"
-        r"instructor|ramp|ground|airport|inflight|in-flight|cargo)\b",
+        r"instructor|ramp|ground|airport|inflight|in-flight|cargo)\b"
+        r"|(?<![A-Za-z])F/?O(?![A-Za-z])"       # F/O or FO abbreviation
+        r"|(?<![A-Za-z])S/?O(?![A-Za-z])"        # S/O (Second Officer)
+        r"|(?<![A-Za-z])C/?O(?![A-Za-z])"        # C/O (Co-pilot)
+        r"|(?<![A-Za-z])CPT(?![A-Za-z])"         # CPT (Captain)
+        r"|(?<![A-Za-z])SFO(?![A-Za-z])",        # SFO (Senior First Officer)
         re.IGNORECASE)
     _ACTYPE_RE = re.compile(
         r"\b([AB]\d{3}|EMB\d{3}|CRJ\d*|ATR\d*|ERJ[-\d]*|E\d{3}|MD\d{2}|B74[78]|Q\d00|Dash|DHC|Saab|AW\d{3}|EC\d{3}|S\d{2}|Bell\d{3}|PC.?12|King Air|Caravan)\b",
         re.IGNORECASE)
-    if rec_job and _AVIATION_RE.search(rec_job):
+    # An existing title is "aviation" if it has an aviation keyword OR an aircraft type
+    if rec_job and (_AVIATION_RE.search(rec_job) or _ACTYPE_RE.search(rec_job)):
         # Existing title is aviation — keep it, UNLESS it has no aircraft prefix and
         # the CV-parsed title has one (Emily's rule: aircraft always in front of title).
         if not _ACTYPE_RE.search(rec_job) and job_title and _ACTYPE_RE.search(job_title):
             pass  # use the CV-parsed title which already has the aircraft prefix
         else:
             job_title = rec_job
-    elif rec_job and not _AVIATION_RE.search(rec_job):
+    elif rec_job and not (_AVIATION_RE.search(rec_job) or _ACTYPE_RE.search(rec_job)):
         # Existing title is not aviation (e.g. "NURSE", "PERFUME ADVISOR").
         # Only keep CV-parsed title if it IS aviation — otherwise use work-type default.
         if job_title and _AVIATION_RE.search(job_title):
@@ -4553,8 +4608,36 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
         # Reduce licence-country skills to 0 (cabin crew / ops / mgmt / airport) or 1 (flight deck / engineering)
         if is_single_nat:
             if lic_skills:
-                print(f"  ℹ  {', '.join(w['name'] for w in work_type_objs)} — removing licence country skills: {[s['name'] for s in lic_skills]}")
-            lic_skills = []
+                # If nat_skills and uncat_country are BOTH empty, lic_skills is the ONLY
+                # nationality data we have. Stripping it would produce []. Instead,
+                # try to resolve the country to an area-43 nationality skill; if that
+                # fails, just keep it as-is rather than wiping the candidate's nationality.
+                if not nat_skills and not uncat_country:
+                    _rescued_from_lic = []
+                    for _ls in lic_skills[:1]:  # promote at most 1
+                        _lname = (_ls.get("name") or "").strip()
+                        # Prefer the area-43 (nationality) version of this country name
+                        _nat_obj = next(
+                            ({"id": v["id"], "name": v["name"]}
+                             for k, v in skills_lookup.items()
+                             if k == _lname.lower() and v.get("id") in nationality_ids),
+                            None
+                        )
+                        if _nat_obj:
+                            _rescued_from_lic.append(_nat_obj)
+                            print(f"  ℹ  Promoted licence country '{_lname}' to nationality skill "
+                                  f"(was only country data for {', '.join(w['name'] for w in work_type_objs)} profile)")
+                        else:
+                            _rescued_from_lic.append(_ls)
+                            print(f"  ℹ  Keeping '{_lname}' as nationality (only country data; "
+                                  f"no area-43 nationality form found)")
+                    nat_skills = _rescued_from_lic
+                    lic_skills = []
+                else:
+                    print(f"  ℹ  {', '.join(w['name'] for w in work_type_objs)} — removing licence country skills: {[s['name'] for s in lic_skills]}")
+                    lic_skills = []
+            else:
+                lic_skills = []
         elif len(lic_skills) > 1:
             chosen_lic = lic_skills[0]
             print(f"  ℹ  Multiple licence countries → keeping: {chosen_lic['name']}")
@@ -4753,10 +4836,12 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
         skills_objs = non_country + nat_skills + uncat_country + lic_skills
 
         # Safety net: nationality must survive for all profiles.
-        # If the assembled list has no nationality adjective, rescue one from the
-        # ORIGINAL Tracker record — prevents the profile going to [] skills when the
-        # only skill is a nationality adjective that didn't land in any bucket.
+        # If the assembled list has no nationality/country skill at all, rescue one
+        # from the ORIGINAL Tracker record.  The check uses nationality_ids (area-43 IDs)
+        # so multi-word demonyms like 'Saudi Arabian' are caught even if they're not in
+        # NATIONALITY_ADJECTIVES (which only has single-word forms like 'saudi').
         _has_nat_adj = any(
+            s.get("id") in nationality_ids or  # area-43 skill by Tracker ID
             (s.get("name") or "").strip().lower() in NATIONALITY_ADJECTIVES
             for s in skills_objs
         )
@@ -4767,12 +4852,14 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
         if not _has_nat_adj and not _has_country:
             _rescue_nat = next(
                 (s for s in _original_qs
-                 if (s.get("name") or "").strip().lower() in NATIONALITY_ADJECTIVES),
+                 if s.get("id") in nationality_ids  # area-43 skill
+                 or (s.get("name") or "").strip().lower() in NATIONALITY_ADJECTIVES
+                 or (s.get("name") or "").strip().lower() in country_skills_set),
                 None
             )
             if _rescue_nat:
                 skills_objs.append(_rescue_nat)
-                print(f"  ℹ  Rescued nationality '{_rescue_nat['name']}' — would have been lost")
+                print(f"  ℹ  Rescued nationality '{_rescue_nat['name']}' from original Tracker record")
 
         # Final dedup — by skill ID only. Same country can appear twice legitimately:
         # once as nationality (area 43) and once as licence country (area 39).
@@ -4883,6 +4970,8 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
                                    first_name=rec_first, surname=rec_sur)
     if status in (200, 204):
         print(f"  ✓ Updated! (HTTP {status})")
+        candidate_full_name = f"{rec_first} {rec_sur}".strip() or name
+        log_daily_update(resource_id, candidate_full_name, job_title, employer, work_type_objs, skills_objs)
         if email_cand:
             if move_to_done(email_cand):
                 print(f"  ✓ Email moved to '{EMAIL_DONE_FOLDER}'")
@@ -6366,12 +6455,12 @@ KNOWN_COUNTRY_NAMES_EXTRA = {
 
 NATIONALITY_ADJECTIVES = {
     "british", "english", "scottish", "welsh", "irish",
-    "american", "emirati", "saudi", "indian", "pakistani",
+    "american", "emirati", "saudi", "saudi arabian", "indian", "pakistani",
     "bangladeshi", "filipino", "indonesian", "malaysian",
     "australian", "canadian", "egyptian", "jordanian",
     "lebanese", "kuwaiti", "qatari", "bahraini", "omani",
     "yemeni", "iraqi", "turkish", "iranian", "russian",
-    "chinese", "japanese", "korean", "thai", "vietnamese",
+    "chinese", "japanese", "korean", "south korean", "north korean", "thai", "vietnamese",
     "french", "german", "spanish", "italian", "greek",
     "dutch", "belgian", "swedish", "norwegian", "danish",
     "polish", "romanian", "ukrainian", "moroccan", "algerian",
@@ -6381,6 +6470,11 @@ NATIONALITY_ADJECTIVES = {
     "palestinian", "syrian", "libyan", "sudanese",
     "serbian", "bosnian", "montenegrin", "macedonian",
     "croatian", "slovenian", "albanian", "kosovar",
+    "azerbaijani", "kazakhstani", "uzbek", "georgian", "armenian",
+    "new zealander", "trinidadian", "jamaican", "barbadian",
+    "colombian", "venezuelan", "ecuadorian", "peruvian", "chilean", "argentinian", "brazilian",
+    "ghanaian", "zambian", "rwandan", "ugandan", "senegalese", "cameroonian",
+    "hong konger",
 }
 
 
