@@ -611,11 +611,21 @@ def build_candidate_index(jwt):
     """
     Page through all resources and build a name→resourceId lookup.
     Also collects quickSkills from existing records to enrich the skills lookup.
-    Returns: (name_index dict, extra_skills dict)
+    Also collects candidates with incomplete profiles (no job title or no skills)
+    so GitHub Actions can process them directly without reading emails.
+    Returns: (name_index dict, extra_skills dict, incomplete_candidates list)
     """
     print("  Loading all candidates from Tracker (this takes ~60 seconds)...")
     name_index   = {}  # "firstname surname" → resourceId
     extra_skills = {}  # name.lower() → {id, name}
+    incomplete_candidates = []  # candidates that appear to need profile completion
+
+    _PLACEHOLDER_TITLES_QUICK = {
+        "unknown", "n/a", "tbd", "to be determined", "candidate",
+        "pilot candidate", "cabin crew candidate", "crew candidate",
+        "flight deck candidate", "aviation candidate", "applicant",
+        "seeking", "open to work",
+    }
 
     import unicodedata
     def norm(s):
@@ -718,6 +728,32 @@ def build_candidate_index(jwt):
                 # Tracker's overlapping/non-monotonic pagination doesn't cause early exit.
                 # If we've seen more pages with no progress than the entire estimated
                 # database size, we've definitely wrapped around — stop then too.
+                # ── Collect incomplete profiles during the same scan ───────────
+                for _rec in items:
+                    _rid = _rec.get("resourceId")
+                    if not _rid:
+                        continue
+                    _first = (_rec.get("firstname") or _rec.get("firstName") or "").strip()
+                    _sur   = (_rec.get("surname")   or _rec.get("lastName")   or "").strip()
+                    _name  = f"{_first} {_sur}".strip()
+                    if not _name:
+                        continue
+                    _job    = (_rec.get("jobTitle") or _rec.get("currentPosition") or "").strip()
+                    _skills = _rec.get("quickSkills") or []
+                    _needs  = (
+                        not _job or
+                        _job.lower() in _PLACEHOLDER_TITLES_QUICK or
+                        not _skills
+                    )
+                    if _needs:
+                        incomplete_candidates.append({
+                            "name":        _name,
+                            "item":        None,
+                            "email_id":    f"tracker:{_rid}",
+                            "graph_token": None,
+                        })
+                # ─────────────────────────────────────────────────────────────
+
                 new_size = len(name_index)
                 if new_size == prev_index_size:
                     no_progress_streak += 1
@@ -757,7 +793,14 @@ def build_candidate_index(jwt):
         print(f"  Loaded {len(name_index)} name entries total (highest ID: {max(all_ids)})")
     else:
         print(f"  Loaded {len(name_index)} name entries total")
-    return name_index, extra_skills
+    # Deduplicate incomplete list by resource ID (multiple status scans may add duplicates)
+    _seen_inc = set()
+    incomplete_candidates = [
+        c for c in incomplete_candidates
+        if c["email_id"] not in _seen_inc and not _seen_inc.add(c["email_id"])
+    ]
+    print(f"  Candidates with incomplete profiles: {len(incomplete_candidates)}")
+    return name_index, extra_skills, incomplete_candidates
 
 
 # Name abbreviation expansions — module-level so process_one can reference it too
@@ -6621,6 +6664,7 @@ def main():
 
     cache_loaded = False
     licence_country_lookup = {}
+    tracker_incomplete = []   # candidates with incomplete profiles (from Tracker scan)
     if os.path.exists(CACHE_FILE):
         try:
             with open(CACHE_FILE) as f:
@@ -6633,6 +6677,7 @@ def main():
                 licence_country_ids  = set(cache.get("licence_country_ids", []))
                 licence_country_lookup = cache.get("licence_country_lookup", {})
                 name_index    = cache["names"]
+                tracker_incomplete = cache.get("incomplete_candidates", [])
                 if not country_skills_set or not nationality_ids or not licence_country_ids:
                     print(f"\n  Cache missing country skill data — forcing rebuild...")
                 else:
@@ -6652,7 +6697,7 @@ def main():
 
         # Build candidate index (full scan of all records)
         print("\nBuilding candidate index...")
-        name_index, extra_skills = build_candidate_index(jwt)
+        name_index, extra_skills, tracker_incomplete = build_candidate_index(jwt)
         skills_lookup.update(extra_skills)
         print(f"  ✓ Index ready. Total skills in lookup: {len(skills_lookup)}")
 
@@ -6674,6 +6719,7 @@ def main():
                     "licence_country_ids": list(licence_country_ids),
                     "licence_country_lookup": licence_country_lookup,
                     "names":     name_index,
+                    "incomplete_candidates": tracker_incomplete,
                     "owa_token": existing_cache.get("owa_token"),
                     "owa_token_ts": existing_cache.get("owa_token_ts", 0),
                 }, f)
@@ -6681,19 +6727,31 @@ def main():
         except Exception as e:
             print(f"  ⚠  Could not save cache: {e}")
 
-    # ── Read candidates from Outlook ───────────────────────────────────────────
-    folder_label = EMAIL_SUBFOLDER if EMAIL_SOURCE == "subfolder" else "Support Inbox"
-    print(f"\nReading candidates from Outlook ({folder_label})...")
-    email_candidates = read_candidates_from_email()
+    # ── Read candidates from Outlook (or Tracker directly on GitHub Actions) ────
+    ON_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
+    candidates_to_process = []
 
-    if email_candidates:
-        print(f"  ✓ {len(email_candidates)} unique candidate(s) found")
-        candidates_to_process = email_candidates
+    if not ON_GITHUB_ACTIONS:
+        # Local: read from Outlook email folder as normal
+        folder_label = EMAIL_SUBFOLDER if EMAIL_SOURCE == "subfolder" else "Support Inbox"
+        print(f"\nReading candidates from Outlook ({folder_label})...")
+        email_candidates = read_candidates_from_email()
+        if email_candidates:
+            print(f"  ✓ {len(email_candidates)} unique candidate(s) found")
+            candidates_to_process = email_candidates
+        else:
+            print("  No candidates loaded — could not read emails from any source.")
+            send_run_summary_email(0, 0, 0, [("EMAIL SOURCE FAILURE", "Could not read candidates from any email source.")])
+            return
     else:
-        print()
-        print("  No candidates loaded — could not read emails from any source.")
-        send_run_summary_email(0, 0, 0, [("EMAIL SOURCE FAILURE", "Could not read candidates from any email source.")])
-        return
+        # GitHub Actions: Microsoft 365 basic auth is blocked — read from Tracker directly.
+        # The build_candidate_index scan already identified candidates with incomplete profiles.
+        print(f"\nRunning on GitHub Actions — reading incomplete profiles from Tracker scan...")
+        if not tracker_incomplete:
+            print("  No incomplete profiles found in Tracker — nothing to do.")
+            return "done"
+        print(f"  ✓ {len(tracker_incomplete)} candidate(s) with incomplete profiles found")
+        candidates_to_process = tracker_incomplete
 
     # ── Load processed-candidate tracking (prevents re-processing) ────────────
     PROCESSED_FILE = "tracker_processed.json"
