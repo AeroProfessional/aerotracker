@@ -31,9 +31,12 @@ jobs:
 
       - name: Run AeroTracker
         env:
-          TRACKER_BEARER: ${{ secrets.TRACKER_BEARER }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
+          TRACKER_BEARER:      ${{ secrets.TRACKER_BEARER }}
+          EMAIL_PASSWORD:      ${{ secrets.EMAIL_PASSWORD }}
+          GROQ_API_KEY:        ${{ secrets.GROQ_API_KEY }}
+          GRAPH_TENANT_ID:     ${{ secrets.GRAPH_TENANT_ID }}
+          GRAPH_CLIENT_ID:     ${{ secrets.GRAPH_CLIENT_ID }}
+          GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
           TEST_MODE: "0"
         run: python update_tracker.py
 
@@ -65,8 +68,11 @@ jobs:
 
       - name: Send spot-check email
         env:
-          EMAIL_PASSWORD:   ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_LOGIN_USER: "emily.walton@aeroprofessional.com"
+          EMAIL_PASSWORD:      ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_LOGIN_USER:    "emily.walton@aeroprofessional.com"
+          GRAPH_TENANT_ID:     ${{ secrets.GRAPH_TENANT_ID }}
+          GRAPH_CLIENT_ID:     ${{ secrets.GRAPH_CLIENT_ID }}
+          GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
         run: python spot_check_email.py
 
   # ── Daily no-CV report at 4pm UK ─────────────────────────────────────────────

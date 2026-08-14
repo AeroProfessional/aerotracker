@@ -143,9 +143,10 @@ _NO_CV_NAMES: list = []
 #   7. pip install msal
 #
 # After setup, the first run will show a code and URL — sign in once, token is saved.
-GRAPH_TENANT_ID  = ""   # disabled — admin consent blocked; using Playwright instead
-GRAPH_CLIENT_ID  = ""   # bc3dae21-7a32-45a1-bf2a-c1da3f70dc40 (re-enable if consent granted)
-GRAPH_TOKEN_FILE = os.path.join(os.path.expanduser("~"), "tracker_graph_token.json")
+GRAPH_TENANT_ID    = os.environ.get("GRAPH_TENANT_ID",    "")  # Directory (tenant) ID from Azure AD app
+GRAPH_CLIENT_ID    = os.environ.get("GRAPH_CLIENT_ID",    "")  # Application (client) ID from Azure AD app
+GRAPH_CLIENT_SECRET= os.environ.get("GRAPH_CLIENT_SECRET","")  # Client secret — enables app-only auth on GitHub Actions
+GRAPH_TOKEN_FILE   = os.path.join(os.path.expanduser("~"), "tracker_graph_token.json")
 
 # ── Tracker web session cookie (for CV downloads) ──────────────────────────────
 # To refresh: in Chrome, open Tracker → F12 → Network → download any CV →
@@ -306,7 +307,31 @@ def send_run_summary_email(done, skipped, already_done, error_summary):
     except Exception:
         pass  # fall through to SMTP
 
-    # ── Method 2: SMTP (works on Linux / GitHub Actions) ─────────────────────
+    # ── Method 2: Microsoft Graph API (works on GitHub Actions when SMTP is blocked) ──
+    if GRAPH_TENANT_ID and GRAPH_CLIENT_ID and GRAPH_CLIENT_SECRET:
+        try:
+            _token = get_graph_token()
+            _hdrs  = {"Authorization": f"Bearer {_token}", "Content-Type": "application/json"}
+            _payload = {
+                "message": {
+                    "subject": subject,
+                    "body": {"contentType": "Text", "content": body},
+                    "toRecipients": [{"emailAddress": {"address": "support@aeroprofessional.com"}}],
+                },
+                "saveToSentItems": "false",
+            }
+            _r = requests.post(
+                f"https://graph.microsoft.com/v1.0/users/{SUPPORT_MAILBOX}/sendMail",
+                json=_payload, headers=_hdrs, timeout=30,
+            )
+            if _r.status_code in (200, 202):
+                print("  ✉  Run summary emailed via Microsoft Graph API")
+                return
+            print(f"  ⚠  Graph send failed ({_r.status_code}): {_r.text[:200]}")
+        except Exception as _ge:
+            print(f"  ⚠  Graph API send error: {_ge}")
+
+    # ── Method 3: SMTP (basic auth — may be blocked by M365 tenant policy) ───
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
@@ -6088,13 +6113,37 @@ def read_candidates_from_email():
 # ── Microsoft Graph API helpers ────────────────────────────────────────────────
 
 def get_graph_token():
-    """Authenticate to Microsoft Graph via device code flow. Token is cached."""
+    """
+    Authenticate to Microsoft Graph.
+
+    Two modes:
+      • App-only (GitHub Actions): when GRAPH_CLIENT_SECRET is set, uses
+        ConfidentialClientApplication with client credentials — no user interaction.
+        Requires application permissions (Mail.Read, Mail.ReadWrite, Mail.Send)
+        granted in Azure AD (not delegated permissions).
+      • Device code (local): when GRAPH_CLIENT_SECRET is not set, prompts the
+        user to sign in once via browser. Token is cached for future runs.
+    """
     try:
         import msal
     except ImportError:
         raise Exception("msal not installed — run: pip install msal --break-system-packages")
     if not GRAPH_TENANT_ID or not GRAPH_CLIENT_ID:
-        raise Exception("GRAPH_TENANT_ID / GRAPH_CLIENT_ID not configured in script")
+        raise Exception("GRAPH_TENANT_ID / GRAPH_CLIENT_ID not configured (check GitHub Secrets)")
+
+    # ── App-only / client credentials (GitHub Actions) ────────────────────────
+    if GRAPH_CLIENT_SECRET:
+        app = msal.ConfidentialClientApplication(
+            GRAPH_CLIENT_ID,
+            authority=f"https://login.microsoftonline.com/{GRAPH_TENANT_ID}",
+            client_credential=GRAPH_CLIENT_SECRET,
+        )
+        result = app.acquire_token_for_client(scopes=["https://graph.microsoft.com/.default"])
+        if result and "access_token" in result:
+            return result["access_token"]
+        raise Exception(f"Graph client-credentials auth failed: {result.get('error_description', result)}")
+
+    # ── Device code flow (interactive — local first-time setup) ───────────────
     cache = msal.SerializableTokenCache()
     if os.path.exists(GRAPH_TOKEN_FILE):
         cache.deserialize(open(GRAPH_TOKEN_FILE).read())
@@ -6104,7 +6153,8 @@ def get_graph_token():
         token_cache=cache,
     )
     GRAPH_SCOPES = ["https://graph.microsoft.com/Mail.Read",
-                    "https://graph.microsoft.com/Mail.ReadWrite"]
+                    "https://graph.microsoft.com/Mail.ReadWrite",
+                    "https://graph.microsoft.com/Mail.Send"]
     accounts = app.get_accounts()
     if accounts:
         result = app.acquire_token_silent(GRAPH_SCOPES, account=accounts[0])
@@ -6912,7 +6962,8 @@ if __name__ == "__main__":
             pass
 
         try:
-            if DRY_RUN or TEST_MODE > 0:
+            if DRY_RUN or TEST_MODE > 0 or os.environ.get("GITHUB_ACTIONS") == "true":
+                # GitHub Actions: run once and exit — the scheduler handles re-running
                 main()
             else:
                 run_number = 0
