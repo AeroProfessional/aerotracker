@@ -76,6 +76,9 @@ EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD",   "PurpleAutumn96?")
 EMAIL_LOGIN_USER  = "emily.walton@aeroprofessional.com"  # Personal account used to access the shared support mailbox
 SMTP_SERVER       = "smtp.office365.com"
 SMTP_PORT         = 587
+# ── Gmail relay (used on GitHub Actions where M365 SMTP is blocked) ───────────
+GMAIL_USER        = os.environ.get("GMAIL_USER",         "")
+GMAIL_APP_PASSWORD= os.environ.get("GMAIL_APP_PASSWORD", "")
 PENDING_CV_FILE   = "pending_cv.json"   # tracks candidates awaiting CV
 DAILY_LOG_FILE    = "daily_updates.json"  # tracks profiles updated each day for spot-check email
 
@@ -307,7 +310,25 @@ def send_run_summary_email(done, skipped, already_done, error_summary):
     except Exception:
         pass  # fall through to SMTP
 
-    # ── Method 2: Microsoft Graph API (works on GitHub Actions when SMTP is blocked) ──
+    # ── Method 2: Gmail SMTP (works on GitHub Actions — M365 SMTP is blocked) ───
+    if GMAIL_USER and GMAIL_APP_PASSWORD:
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"]    = f"AeroTracker <{GMAIL_USER}>"
+            msg["To"]      = "support@aeroprofessional.com"
+            msg.attach(MIMEText(body, "plain"))
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.ehlo()
+                server.starttls()
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                server.sendmail(GMAIL_USER, "support@aeroprofessional.com", msg.as_string())
+            print("  ✉  Run summary emailed via Gmail")
+            return
+        except Exception as e:
+            print(f"  ⚠  Gmail send failed: {e}")
+
+    # ── Method 3: Microsoft Graph API (works on GitHub Actions when SMTP is blocked) ──
     if GRAPH_TENANT_ID and GRAPH_CLIENT_ID and GRAPH_CLIENT_SECRET:
         try:
             _token = get_graph_token()

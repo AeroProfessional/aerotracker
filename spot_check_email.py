@@ -17,6 +17,8 @@ GRAPH_TENANT_ID   = os.environ.get("GRAPH_TENANT_ID",    "")
 GRAPH_CLIENT_ID   = os.environ.get("GRAPH_CLIENT_ID",    "")
 GRAPH_CLIENT_SECRET = os.environ.get("GRAPH_CLIENT_SECRET", "")
 SEND_FROM_MAILBOX = "support@aeroprofessional.com"  # Graph API sends as this mailbox
+GMAIL_USER        = os.environ.get("GMAIL_USER",         "")
+GMAIL_APP_PASSWORD= os.environ.get("GMAIL_APP_PASSWORD", "")
 SMTP_SERVER       = "smtp.office365.com"
 SMTP_PORT         = 587
 SEND_TO           = "support@aeroprofessional.com"
@@ -76,7 +78,28 @@ def send_spot_check():
     body = "\n".join(lines)
     subject = f"Tracker Spot-Check — {len(sample)} profiles to review ({today})"
 
-    # ── Method 1: Microsoft Graph API (GitHub Actions — SMTP basic auth disabled) ──
+    # ── Method 1: Gmail SMTP (GitHub Actions — M365 SMTP is blocked) ────────────
+    if GMAIL_USER and GMAIL_APP_PASSWORD:
+        try:
+            import smtplib
+            from email.mime.multipart import MIMEMultipart
+            from email.mime.text import MIMEText
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"]    = f"AeroTracker <{GMAIL_USER}>"
+            msg["To"]      = SEND_TO
+            msg.attach(MIMEText(body, "plain"))
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.ehlo()
+                server.starttls()
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                server.sendmail(GMAIL_USER, SEND_TO, msg.as_string())
+            print(f"  ✉  Spot-check email sent via Gmail ({len(sample)} profiles)")
+            return
+        except Exception as e:
+            print(f"  ⚠  Gmail send failed: {e}")
+
+    # ── Method 2: Microsoft Graph API (GitHub Actions — SMTP basic auth disabled) ──
     if GRAPH_TENANT_ID and GRAPH_CLIENT_ID and GRAPH_CLIENT_SECRET:
         try:
             token  = _get_graph_token()
