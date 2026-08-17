@@ -6941,7 +6941,8 @@ def main():
         except Exception:
             pass
     print(f"{'='*60}")
-    send_run_summary_email(done, skipped, already_done_count, error_summary)
+    if done > 0 or error_summary:
+        send_run_summary_email(done, skipped, already_done_count, error_summary)
 
 
 def check_pending_cvs():
