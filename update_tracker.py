@@ -67,12 +67,12 @@ _jwt_holder: list = []                 # [token] — shared mutable JWT for work
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-TRACKER_BEARER    = os.environ.get("TRACKER_BEARER",  "b28cae06af044958afb45fa8b1445fa7")
+TRACKER_BEARER    = os.environ.get("TRACKER_BEARER",  "")
 TRACKER_API       = "https://evoglapi.tracker-rms.com"
 
 # ── Email settings ─────────────────────────────────────────────────────────────
 EMAIL_FROM        = "support@aeroprofessional.com"
-EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD",   "PurpleAutumn96?")
+EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD",   "")
 EMAIL_LOGIN_USER  = "emily.walton@aeroprofessional.com"  # Personal account used to access the shared support mailbox
 SMTP_SERVER       = "smtp.office365.com"
 SMTP_PORT         = 587

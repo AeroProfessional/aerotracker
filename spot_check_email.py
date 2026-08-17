@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 
 DAILY_LOG_FILE    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "daily_updates.json")
 EMAIL_FROM        = os.environ.get("EMAIL_LOGIN_USER", "emily.walton@aeroprofessional.com")
-EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD",   "PurpleAutumn96?")
+EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD",   "")
 GRAPH_TENANT_ID   = os.environ.get("GRAPH_TENANT_ID",    "")
 GRAPH_CLIENT_ID   = os.environ.get("GRAPH_CLIENT_ID",    "")
 GRAPH_CLIENT_SECRET = os.environ.get("GRAPH_CLIENT_SECRET", "")

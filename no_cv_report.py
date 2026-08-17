@@ -22,7 +22,7 @@ from update_tracker import get_jwt, h, TRACKER_API, PENDING_CV_FILE
 # ── Who receives the daily report ─────────────────────────────────────────────
 REPORT_TO      = "support@aeroprofessional.com"
 EMAIL_FROM     = "support@aeroprofessional.com"
-EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "PurpleAutumn96?")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
 EMAIL_LOGIN    = "emily.walton@aeroprofessional.com"
 SMTP_SERVER    = "smtp.office365.com"
 SMTP_PORT      = 587
