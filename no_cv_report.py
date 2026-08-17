@@ -20,12 +20,14 @@ from email.mime.multipart import MIMEMultipart
 from update_tracker import get_jwt, h, TRACKER_API, PENDING_CV_FILE
 
 # ── Who receives the daily report ─────────────────────────────────────────────
-REPORT_TO      = "support@aeroprofessional.com"
-EMAIL_FROM     = "support@aeroprofessional.com"
-EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
-EMAIL_LOGIN    = "emily.walton@aeroprofessional.com"
-SMTP_SERVER    = "smtp.office365.com"
-SMTP_PORT      = 587
+REPORT_TO         = "support@aeroprofessional.com"
+EMAIL_FROM        = "support@aeroprofessional.com"
+EMAIL_PASSWORD    = os.environ.get("EMAIL_PASSWORD", "")
+EMAIL_LOGIN       = "emily.walton@aeroprofessional.com"
+SMTP_SERVER       = "smtp.office365.com"
+SMTP_PORT         = 587
+GMAIL_USER        = os.environ.get("GMAIL_USER", "")
+GMAIL_APP_PASSWORD= os.environ.get("GMAIL_APP_PASSWORD", "")
 
 # ── How many days before flagging as overdue ───────────────────────────────────
 OVERDUE_DAYS = 3
@@ -90,10 +92,24 @@ def send_report_email(still_waiting, newly_resolved, overdue):
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"]    = EMAIL_FROM
+    msg["From"]    = f"AeroTracker <{GMAIL_USER}>" if GMAIL_USER else EMAIL_FROM
     msg["To"]      = REPORT_TO
     msg.attach(MIMEText(body, "plain"))
 
+    # ── Method 1: Gmail SMTP (GitHub Actions — M365 SMTP is blocked) ─────────
+    if GMAIL_USER and GMAIL_APP_PASSWORD:
+        try:
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.ehlo()
+                server.starttls()
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                server.sendmail(GMAIL_USER, REPORT_TO, msg.as_string())
+            print(f"  ✓ Report emailed via Gmail to {REPORT_TO}")
+            return True
+        except Exception as e:
+            print(f"  ⚠  Gmail send failed: {e}")
+
+    # ── Method 2: Office 365 SMTP (local use) ────────────────────────────────
     try:
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
             server.ehlo()

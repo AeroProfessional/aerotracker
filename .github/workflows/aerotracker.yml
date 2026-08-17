@@ -99,8 +99,10 @@ jobs:
 
       - name: Run no-CV report
         env:
-          TRACKER_BEARER: ${{ secrets.TRACKER_BEARER }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TRACKER_BEARER:    ${{ secrets.TRACKER_BEARER }}
+          EMAIL_PASSWORD:    ${{ secrets.EMAIL_PASSWORD }}
+          GMAIL_USER:        ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python no_cv_report.py
 
       - name: Commit updated watchlist
