@@ -6798,16 +6798,29 @@ def main():
         except Exception:
             pass
 
-    # Filter out already-processed candidates (by name or email_id)
+    # Build set of confirmed-processed Tracker resource IDs for reliable deduplication
+    processed_tracker_rids = {str(v) for v in processed_resource_ids.values()}
+
+    # Filter out already-processed candidates
     unprocessed = []
     already_done_count = 0
     for c in candidates_to_process:
         nm  = " ".join(c["name"].strip().split()).lower()  # normalise internal whitespace
         eid = c.get("email_id") or ""
-        if nm in processed_names or (eid and eid in processed_ids):
-            already_done_count += 1
+        if eid.startswith("tracker:"):
+            # Tracker-direct mode: deduplicate by resource ID only (names list is unreliable —
+            # it accumulated 5000+ entries from local runs and blocks legitimate re-processing)
+            rid_str = eid.replace("tracker:", "")
+            if rid_str in processed_tracker_rids:
+                already_done_count += 1
+            else:
+                unprocessed.append(c)
         else:
-            unprocessed.append(c)
+            # Email-based candidates: use name / email_id matching as before
+            if nm in processed_names or (eid and eid in processed_ids):
+                already_done_count += 1
+            else:
+                unprocessed.append(c)
 
     candidates_to_process = unprocessed
     total = len(candidates_to_process)
