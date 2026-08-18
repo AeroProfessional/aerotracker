@@ -3494,11 +3494,22 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
 
     # 1. Find in Tracker
     print("\n[1/5] Looking up in Tracker...")
-    result = find_candidate(name, name_index, jwt)
 
     NOT_FOUND_LOG = "tracker_not_found.txt"
     if os.path.dirname(NOT_FOUND_LOG):
         os.makedirs(os.path.dirname(NOT_FOUND_LOG), exist_ok=True)
+
+    # For Tracker-direct candidates, use the known resource ID from the scan —
+    # no name search needed (avoids failures on unusual/duplicate names).
+    _eid_str = (email_cand or {}).get("email_id", "")
+    if isinstance(_eid_str, str) and _eid_str.startswith("tracker:"):
+        try:
+            result = int(_eid_str.replace("tracker:", ""))
+            print(f"  ✓ Using known Tracker resource ID: {result}")
+        except (ValueError, TypeError):
+            result = find_candidate(name, name_index, jwt)
+    else:
+        result = find_candidate(name, name_index, jwt)
 
     if result is None:
         print(f"  ✗ Not found in Tracker — logging and continuing.")
@@ -6939,6 +6950,14 @@ def main():
                     if eid:
                         processed_ids.add(eid)
                     rid = cand.get("tracker_id")
+                    if not rid:
+                        # Fallback: extract resource ID from email_id for Tracker-direct candidates
+                        _eid = cand.get("email_id", "")
+                        if isinstance(_eid, str) and _eid.startswith("tracker:"):
+                            try:
+                                rid = int(_eid.replace("tracker:", ""))
+                            except (ValueError, TypeError):
+                                pass
                     if rid:
                         processed_resource_ids[_nm] = rid
                     _save_processed()
