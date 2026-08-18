@@ -17,7 +17,7 @@ jobs:
   process-registrations:
     name: Process new registrations
     runs-on: ubuntu-latest
-    timeout-minutes: 55      # hard cap — never runs longer than an hour
+    timeout-minutes: 120     # hard cap — Python self-limits at 45min, leaving time to commit
     concurrency:
       group: process-registrations   # only one instance at a time
       cancel-in-progress: false      # queue rather than cancel; preserves progress
@@ -51,6 +51,7 @@ jobs:
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
           MAX_PER_RUN: "150"   # process at most 150 candidates per hourly run
+          MAX_RUN_SECS: "2700" # stop after 45 min so commit step has time to push
           TEST_MODE: "0"
         run: python update_tracker.py
 

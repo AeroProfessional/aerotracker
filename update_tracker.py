@@ -6852,6 +6852,13 @@ def main():
     if os.path.dirname(ERROR_LOG):
         os.makedirs(os.path.dirname(ERROR_LOG), exist_ok=True)
 
+    # ── Time-limit: stop processing early enough that the commit step can run ──
+    # MAX_RUN_SECS set to 2700 (45 min) in workflow; script exits cleanly so the
+    # "Commit updated state files" step always has time to push progress to GitHub.
+    _RUN_START    = time.time()
+    MAX_RUN_SECS  = int(os.environ.get("MAX_RUN_SECS", "0"))  # 0 = no limit
+    _time_limit_hit = False
+
     done = skipped = 0
     error_summary = []  # (name, reason) for every candidate that didn't complete
     _counter_lock = threading.Lock()
@@ -6904,6 +6911,12 @@ def main():
             _futures[_pool.submit(_run_one, (_batch_i, _cand))] = _cand
 
         for _fut in _as_completed(_futures):
+            # Stop collecting results if time limit reached — lets commit step run
+            if MAX_RUN_SECS > 0 and (time.time() - _RUN_START) > MAX_RUN_SECS:
+                _time_limit_hit = True
+                print(f"\n  ⏱  Time limit ({MAX_RUN_SECS//60}m) reached — stopping to save progress to GitHub.")
+                break
+
             try:
                 name, result, cand, err = _fut.result()
             except Exception as _fe:
