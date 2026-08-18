@@ -6818,6 +6818,14 @@ def main():
         print("\n  All candidates already processed — nothing to do.")
         return "done"
 
+    # ── Cap candidates per hourly run (prevents 6-hour GitHub Actions timeouts) ──
+    MAX_PER_RUN = int(os.environ.get("MAX_PER_RUN", "0"))
+    if MAX_PER_RUN > 0 and len(candidates_to_process) > MAX_PER_RUN:
+        remaining = len(candidates_to_process) - MAX_PER_RUN
+        print(f"\n  ⚡ Capping this run at {MAX_PER_RUN} candidates — {remaining} will be processed in future runs.")
+        candidates_to_process = candidates_to_process[:MAX_PER_RUN]
+        total = len(candidates_to_process)
+
     if TEST_MODE:
         candidates_to_process = candidates_to_process[:TEST_MODE]
         total = len(candidates_to_process)

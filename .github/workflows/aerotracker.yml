@@ -1,5 +1,8 @@
 name: AeroTracker — Process Registrations
 
+permissions:
+  contents: write          # allows the bot to commit state files back
+
 on:
   push:
     branches: [master]
@@ -14,11 +17,17 @@ jobs:
   process-registrations:
     name: Process new registrations
     runs-on: ubuntu-latest
+    timeout-minutes: 55      # hard cap — never runs longer than an hour
+    concurrency:
+      group: process-registrations   # only one instance at a time
+      cancel-in-progress: false      # queue rather than cancel; preserves progress
     if: github.event.schedule == '0 * * * *' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,16 +50,27 @@ jobs:
           GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
+          MAX_PER_RUN: "150"   # process at most 150 candidates per hourly run
           TEST_MODE: "0"
         run: python update_tracker.py
 
       - name: Commit updated state files
+        if: always()           # run even if the Python script crashed — saves partial progress
         run: |
           git config user.name  "AeroTracker Bot"
           git config user.email "support@aeroprofessional.com"
-          git add pending_cv.json tracker_processed.json tracker_cache.json daily_updates.json || true
-          git diff --staged --quiet || git commit -m "chore: update state files [skip ci]"
-          git push || true
+          git add pending_cv.json tracker_processed.json tracker_cache.json daily_updates.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No state changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update state files [skip ci]"
+          git pull --rebase origin main 2>/dev/null || git pull --rebase origin master 2>/dev/null || true
+          if git push; then
+            echo "✓ State files committed and pushed"
+          else
+            echo "⚠  Push failed — will retry next run"
+          fi
 
   # ── Daily spot-check email at 4pm UK ─────────────────────────────────────────
   spot-check:
@@ -61,6 +81,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -90,6 +112,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -108,9 +132,19 @@ jobs:
         run: python no_cv_report.py
 
       - name: Commit updated watchlist
+        if: always()
         run: |
           git config user.name  "AeroTracker Bot"
           git config user.email "support@aeroprofessional.com"
-          git add pending_cv.json || true
-          git diff --staged --quiet || git commit -m "chore: update pending CV watchlist [skip ci]"
-          git push || true
+          git add pending_cv.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No watchlist changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update pending CV watchlist [skip ci]"
+          git pull --rebase origin main 2>/dev/null || git pull --rebase origin master 2>/dev/null || true
+          if git push; then
+            echo "✓ Watchlist committed and pushed"
+          else
+            echo "⚠  Push failed — will retry next run"
+          fi
