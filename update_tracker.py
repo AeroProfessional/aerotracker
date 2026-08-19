@@ -6798,16 +6798,26 @@ def main():
         except Exception:
             pass
 
-    # Filter out already-processed candidates (by name or email_id)
+    # Filter out already-processed candidates.
+    # Tracker-direct candidates (email_id = "tracker:<rid>"): deduplicate by resource ID.
+    # Email-sourced candidates: deduplicate by name or email address.
+    processed_tracker_rids = {str(v) for v in processed_resource_ids.values()}
     unprocessed = []
     already_done_count = 0
     for c in candidates_to_process:
         nm  = " ".join(c["name"].strip().split()).lower()  # normalise internal whitespace
         eid = c.get("email_id") or ""
-        if nm in processed_names or (eid and eid in processed_ids):
-            already_done_count += 1
+        if eid.startswith("tracker:"):
+            rid_str = eid.replace("tracker:", "")
+            if rid_str in processed_tracker_rids:
+                already_done_count += 1
+            else:
+                unprocessed.append(c)
         else:
-            unprocessed.append(c)
+            if nm in processed_names or (eid and eid in processed_ids):
+                already_done_count += 1
+            else:
+                unprocessed.append(c)
 
     candidates_to_process = unprocessed
     total = len(candidates_to_process)
@@ -6913,6 +6923,14 @@ def main():
                     if eid:
                         processed_ids.add(eid)
                     rid = cand.get("tracker_id")
+                    if not rid:
+                        # For Tracker-direct candidates the resource ID is in email_id
+                        _eid = cand.get("email_id", "")
+                        if isinstance(_eid, str) and _eid.startswith("tracker:"):
+                            try:
+                                rid = int(_eid.replace("tracker:", ""))
+                            except (ValueError, TypeError):
+                                pass
                     if rid:
                         processed_resource_ids[_nm] = rid
                     _save_processed()
