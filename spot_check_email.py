@@ -21,7 +21,7 @@ GMAIL_USER        = os.environ.get("GMAIL_USER",         "")
 GMAIL_APP_PASSWORD= os.environ.get("GMAIL_APP_PASSWORD", "")
 SMTP_SERVER       = "smtp.office365.com"
 SMTP_PORT         = 587
-SEND_TO           = "support@aeroprofessional.com"
+SEND_TO           = "emily.walton@aeroprofessional.com"
 SAMPLE_SIZE       = 15
 
 
