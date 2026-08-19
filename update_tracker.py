@@ -3494,22 +3494,11 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
 
     # 1. Find in Tracker
     print("\n[1/5] Looking up in Tracker...")
+    result = find_candidate(name, name_index, jwt)
 
     NOT_FOUND_LOG = "tracker_not_found.txt"
     if os.path.dirname(NOT_FOUND_LOG):
         os.makedirs(os.path.dirname(NOT_FOUND_LOG), exist_ok=True)
-
-    # For Tracker-direct candidates, use the known resource ID from the scan —
-    # no name search needed (avoids failures on unusual/duplicate names).
-    _eid_str = (email_cand or {}).get("email_id", "")
-    if isinstance(_eid_str, str) and _eid_str.startswith("tracker:"):
-        try:
-            result = int(_eid_str.replace("tracker:", ""))
-            print(f"  ✓ Using known Tracker resource ID: {result}")
-        except (ValueError, TypeError):
-            result = find_candidate(name, name_index, jwt)
-    else:
-        result = find_candidate(name, name_index, jwt)
 
     if result is None:
         print(f"  ✗ Not found in Tracker — logging and continuing.")
@@ -6809,29 +6798,16 @@ def main():
         except Exception:
             pass
 
-    # Build set of confirmed-processed Tracker resource IDs for reliable deduplication
-    processed_tracker_rids = {str(v) for v in processed_resource_ids.values()}
-
-    # Filter out already-processed candidates
+    # Filter out already-processed candidates (by name or email_id)
     unprocessed = []
     already_done_count = 0
     for c in candidates_to_process:
         nm  = " ".join(c["name"].strip().split()).lower()  # normalise internal whitespace
         eid = c.get("email_id") or ""
-        if eid.startswith("tracker:"):
-            # Tracker-direct mode: deduplicate by resource ID only (names list is unreliable —
-            # it accumulated 5000+ entries from local runs and blocks legitimate re-processing)
-            rid_str = eid.replace("tracker:", "")
-            if rid_str in processed_tracker_rids:
-                already_done_count += 1
-            else:
-                unprocessed.append(c)
+        if nm in processed_names or (eid and eid in processed_ids):
+            already_done_count += 1
         else:
-            # Email-based candidates: use name / email_id matching as before
-            if nm in processed_names or (eid and eid in processed_ids):
-                already_done_count += 1
-            else:
-                unprocessed.append(c)
+            unprocessed.append(c)
 
     candidates_to_process = unprocessed
     total = len(candidates_to_process)
@@ -6862,13 +6838,6 @@ def main():
     ERROR_LOG = "run_errors.txt"
     if os.path.dirname(ERROR_LOG):
         os.makedirs(os.path.dirname(ERROR_LOG), exist_ok=True)
-
-    # ── Time-limit: stop processing early enough that the commit step can run ──
-    # MAX_RUN_SECS set to 2700 (45 min) in workflow; script exits cleanly so the
-    # "Commit updated state files" step always has time to push progress to GitHub.
-    _RUN_START    = time.time()
-    MAX_RUN_SECS  = int(os.environ.get("MAX_RUN_SECS", "0"))  # 0 = no limit
-    _time_limit_hit = False
 
     done = skipped = 0
     error_summary = []  # (name, reason) for every candidate that didn't complete
@@ -6922,12 +6891,6 @@ def main():
             _futures[_pool.submit(_run_one, (_batch_i, _cand))] = _cand
 
         for _fut in _as_completed(_futures):
-            # Stop collecting results if time limit reached — lets commit step run
-            if MAX_RUN_SECS > 0 and (time.time() - _RUN_START) > MAX_RUN_SECS:
-                _time_limit_hit = True
-                print(f"\n  ⏱  Time limit ({MAX_RUN_SECS//60}m) reached — stopping to save progress to GitHub.")
-                break
-
             try:
                 name, result, cand, err = _fut.result()
             except Exception as _fe:
@@ -6950,14 +6913,6 @@ def main():
                     if eid:
                         processed_ids.add(eid)
                     rid = cand.get("tracker_id")
-                    if not rid:
-                        # Fallback: extract resource ID from email_id for Tracker-direct candidates
-                        _eid = cand.get("email_id", "")
-                        if isinstance(_eid, str) and _eid.startswith("tracker:"):
-                            try:
-                                rid = int(_eid.replace("tracker:", ""))
-                            except (ValueError, TypeError):
-                                pass
                     if rid:
                         processed_resource_ids[_nm] = rid
                     _save_processed()

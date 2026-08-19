@@ -1,6 +1,8 @@
 @echo off
 cd /d C:\AeroTracker
 git add -A
-git commit -m "Update"
-git push origin HEAD:main
+git diff --staged --quiet && echo Nothing to commit || git commit -m "chore: local updates"
+git pull --rebase origin master
+git push origin master
+echo Done.
 pause
