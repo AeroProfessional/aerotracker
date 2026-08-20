@@ -55,9 +55,22 @@ Showing: <strong>{len(sample)}</strong> random profiles</p>
 </table>
 </body></html>"""
 
-out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "spotcheck_report.html")
-with open(out, "w", encoding="utf-8") as f:
-    f.write(html)
+SHARED_FOLDER = r"C:\Users\EmilyWalton\Aeroprofessional Limited\Aeroprofessional - Documents\Aeropro\Admin\Admin Team"
 
-print(f"Report saved: {out}")
+# Save to shared team folder (OneDrive/SharePoint sync)
+shared_out = os.path.join(SHARED_FOLDER, f"AeroTracker_SpotCheck_{check_date}.html")
+try:
+    os.makedirs(SHARED_FOLDER, exist_ok=True)
+    with open(shared_out, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"✓ Saved to shared folder: {shared_out}")
+    out = shared_out
+except Exception as e:
+    # Fallback: save locally if shared folder not reachable
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"AeroTracker_SpotCheck_{check_date}.html")
+    with open(out, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"⚠ Shared folder not reachable ({e})")
+    print(f"  Saved locally instead: {out}")
+
 webbrowser.open(f"file:///{out}")

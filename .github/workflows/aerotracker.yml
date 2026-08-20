@@ -17,7 +17,7 @@ jobs:
   process-registrations:
     name: Process new registrations
     runs-on: ubuntu-latest
-    timeout-minutes: 55      # hard cap — never runs longer than an hour
+    timeout-minutes: 110     # 2-hour cap — allows time for cache rebuild + processing
     concurrency:
       group: process-registrations   # only one instance at a time
       cancel-in-progress: false      # queue rather than cancel; preserves progress
@@ -28,6 +28,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore Tracker state (cache + processed IDs)
+        uses: actions/cache@v4
+        with:
+          path: |
+            tracker_cache.json
+            tracker_processed.json
+          key: tracker-state-${{ github.run_number }}
+          restore-keys: |
+            tracker-state-
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -141,9 +151,4 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update pending CV watchlist [skip ci]"
-          git pull --rebase origin main 2>/dev/null || git pull --rebase origin master 2>/dev/null || true
-          if git push; then
-            echo "✓ Watchlist committed and pushed"
-          else
-            echo "⚠  Push failed — will retry next run"
-          fi
+          git push --force origin HEAD:main || echo "⚠ Push failed"
