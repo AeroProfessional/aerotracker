@@ -29,15 +29,13 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Restore Tracker state (cache + processed IDs)
+      - name: Restore Tracker candidate cache
         uses: actions/cache@v4
         with:
-          path: |
-            tracker_cache.json
-            tracker_processed.json
-          key: tracker-state-${{ github.run_number }}
+          path: tracker_cache.json   # 24h candidate index cache — not committed to git (too large)
+          key: tracker-cache-${{ github.run_number }}
           restore-keys: |
-            tracker-state-
+            tracker-cache-
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -60,7 +58,7 @@ jobs:
           GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
-          MAX_PER_RUN: "150"   # process at most 150 candidates per hourly run
+          MAX_PER_RUN: "300"   # process at most 300 candidates per hourly run
           TEST_MODE: "0"
         run: python update_tracker.py
 
@@ -69,7 +67,7 @@ jobs:
         run: |
           git config user.name  "AeroTracker Bot"
           git config user.email "support@aeroprofessional.com"
-          git add daily_updates.json pending_cv.json 2>/dev/null || true
+          git add daily_updates.json pending_cv.json tracker_processed.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No state changes to commit"
             exit 0
