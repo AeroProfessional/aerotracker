@@ -1,11 +1,25 @@
 """Generate a daily spot-check HTML report and save to shared team folder.
+Auto-pulls latest data from GitHub before generating so the report is always current.
 Includes:
   - Section 1: Sample of profiles updated today (spot-check)
   - Section 2: All candidates currently waiting for a CV (pending_cv.json)
 """
-import json, random, datetime, os, webbrowser
+import json, random, datetime, os, webbrowser, subprocess
 
 SCRIPT_DIR      = os.path.dirname(os.path.abspath(__file__))
+
+# Pull latest data from GitHub so the report always reflects today's runs
+try:
+    result = subprocess.run(
+        ["git", "pull", "--ff-only", "origin", "master"],
+        cwd=SCRIPT_DIR, capture_output=True, text=True, timeout=30
+    )
+    if result.returncode == 0:
+        print("✓ Pulled latest data from GitHub")
+    else:
+        print(f"⚠ git pull warning: {result.stderr.strip()[:100]}")
+except Exception as e:
+    print(f"⚠ Could not pull from GitHub: {e} — using local data")
 DAILY_LOG_FILE  = os.path.join(SCRIPT_DIR, "daily_updates.json")
 PENDING_CV_FILE = os.path.join(SCRIPT_DIR, "pending_cv.json")
 SAMPLE_SIZE     = 15

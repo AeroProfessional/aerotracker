@@ -421,19 +421,34 @@ def log_daily_update(resource_id, candidate_name, job_title, employer, work_type
 # ── Tracker auth ───────────────────────────────────────────────────────────────
 
 def _send_smtp_alert(subject, body):
-    """Send a plain-text alert email to support@ via SMTP. Used for bearer token expiry etc."""
+    """Send a plain-text alert email to support@ — tries Gmail first (works on GitHub Actions),
+    falls back to M365 SMTP for local runs."""
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["To"]      = "support@aeroprofessional.com"
+    msg.attach(MIMEText(body, "plain"))
+
+    # ── Method 1: Gmail SMTP (works on GitHub Actions where M365 is blocked) ──
+    if GMAIL_USER and GMAIL_APP_PASSWORD:
+        try:
+            msg["From"] = f"AeroTracker <{GMAIL_USER}>"
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.ehlo(); server.starttls()
+                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+                server.sendmail(GMAIL_USER, "support@aeroprofessional.com", msg.as_string())
+            print(f"  ✉  Alert sent via Gmail: {subject}")
+            return
+        except Exception as _ge:
+            print(f"  ⚠  Gmail alert failed: {_ge}")
+
+    # ── Method 2: M365 SMTP (works on local machine) ──────────────────────────
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"]    = EMAIL_FROM
-        msg["To"]      = "support@aeroprofessional.com"
-        msg.attach(MIMEText(body, "plain"))
+        msg["From"] = EMAIL_FROM
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.ehlo()
-            server.starttls()
+            server.ehlo(); server.starttls()
             server.login(EMAIL_LOGIN_USER, EMAIL_PASSWORD)
             server.sendmail(EMAIL_FROM, "support@aeroprofessional.com", msg.as_string())
-        print(f"  ✉  Alert sent: {subject}")
+        print(f"  ✉  Alert sent via M365: {subject}")
     except Exception as _ae:
         print(f"  ⚠  Could not send alert email: {_ae}")
 
