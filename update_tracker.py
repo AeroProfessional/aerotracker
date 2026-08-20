@@ -3107,12 +3107,23 @@ def parse_cv(cv_text, candidate_name):
             tri_tre.append("SFI")
 
     elif work_type == "cabin crew":
-        for kw, level in CABIN_SENIORITY_MAP.items():
-            if kw in lower:
-                cabin_level = level
-                break
-        if not cabin_level:
-            cabin_level = "Main Crew"
+        # Check for actual cabin crew experience keywords before assigning any level.
+        # Must see evidence of real cabin crew work — not just "cabin crew" in a job application header.
+        _CC_EXPERIENCE_SIGNALS = [
+            "flight attendant", "cabin crew", "cabin attendant", "air hostess",
+            "stewardess", "steward", "purser", "cabin staff", "inflight",
+            "in-flight", "in flight", "galley", "boarding", "passenger service",
+            "cabin service", "sky hostess", "onboard", "on-board",
+        ]
+        _has_cc_experience = any(sig in lower for sig in _CC_EXPERIENCE_SIGNALS)
+        if _has_cc_experience:
+            for kw, level in CABIN_SENIORITY_MAP.items():
+                if kw in lower:
+                    cabin_level = level
+                    break
+            if not cabin_level:
+                cabin_level = "Main Crew"
+        # If no cabin crew experience found, leave cabin_level as None — don't add Main Crew
 
     elif work_type == "engineering":
         if re.search(r"\bB1\b", text):
@@ -4622,15 +4633,7 @@ def process_one(name, jwt, name_index, skills_lookup, email_cand=None, country_s
                 non_country = [s for s in non_country
                                if (s.get("name") or "").strip().lower() not in _VALID_CABIN_LEVELS]
                 print(f"  ℹ  Multiple cabin levels — keeping highest: {_keep.get('name')}")
-            # If no valid level present at all, add Main Crew as default
-            _has_level = any((s.get("name") or "").strip().lower() in _VALID_CABIN_LEVELS
-                              for s in skills_objs)
-            if not _has_level:
-                _mc_obj = next(({"id": v["id"], "name": v["name"]}
-                                for k, v in skills_lookup.items() if k == "main crew"), None)
-                if _mc_obj:
-                    non_country.insert(0, _mc_obj)
-                    print(f"  ℹ  Added Main Crew skill (cabin crew candidate)")
+            # Do NOT add Main Crew as a default — it must come from CV experience detection only
 
         # Strip regional terms (Europe, Middle East, Asia etc.) from both buckets —
         # they must never be chosen as a candidate's nationality.
@@ -6820,6 +6823,9 @@ def main():
                 unprocessed.append(c)
 
     candidates_to_process = unprocessed
+    # Shuffle so each hourly run processes a different random batch
+    import random as _random
+    _random.shuffle(candidates_to_process)
     total = len(candidates_to_process)
 
     if already_done_count:

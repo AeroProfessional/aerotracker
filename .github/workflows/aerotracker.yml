@@ -59,17 +59,16 @@ jobs:
         run: |
           git config user.name  "AeroTracker Bot"
           git config user.email "support@aeroprofessional.com"
-          git add pending_cv.json tracker_processed.json tracker_cache.json daily_updates.json 2>/dev/null || true
+          git add daily_updates.json pending_cv.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No state changes to commit"
             exit 0
           fi
           git commit -m "chore: update state files [skip ci]"
-          git pull --rebase origin main 2>/dev/null || git pull --rebase origin master 2>/dev/null || true
-          if git push; then
+          if git push --force origin HEAD:main; then
             echo "✓ State files committed and pushed"
           else
-            echo "⚠  Push failed — will retry next run"
+            echo "⚠  Push failed"
           fi
 
   # ── Daily spot-check email at 4pm UK ─────────────────────────────────────────
