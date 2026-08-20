@@ -2421,6 +2421,11 @@ def _groq_parse_cv(cv_text, candidate_name):
 
     # First 2500 chars cover employer/title in virtually every CV
     _text = (cv_text or "").strip()[:2500]
+    # If CV text is very short, the LLM has no reliable context — skip it.
+    # Short OCR often contains only letterhead/watermark text (e.g. "AeroProfessional Implementation")
+    # and the LLM will confuse that with actual job data.
+    if len(_text) < 200:
+        return None
 
     _system = (
         "You are a precise data extractor for aviation recruitment. "
@@ -2447,6 +2452,7 @@ RULES:
 - If the CV shows 'May 2023 to Date British Airways' the employer is 'British Airways'.
 - If the CV shows 'Aeronautical Engineer — Memphis Airlines' the employer is 'Memphis Airlines'.
 - job_title must NEVER be 'Resume', 'CV', 'Curriculum Vitae' or any document header word.
+- job_title must NEVER contain 'AeroProfessional', 'Implementation', 'Tracker RMS' or any software/database name.
 
 work_type guide:
 - Flight Deck: pilots, captains, first officers, flight instructors
@@ -2493,6 +2499,23 @@ work_type guide:
                 r"\b(manager|director|engineer|officer|pilot|captain|technician|"
                 r"lead|head|chief|specialist|consultant|analyst|coordinator|"
                 r"supervisor|instructor|trainer)\s*$", _emp, re.IGNORECASE):
+            _emp = ""
+
+        # Reject job titles that contain our company name or system artefacts.
+        # These appear when OCR picks up letterhead/watermark text and the LLM
+        # mistakes it for a job title (e.g. "AeroProfessional Implementation").
+        _ARTIFACT_JT = re.compile(
+            r"\b(aeroprofessional|aero\s+professional|aeropro\b|"
+            r"implementation|tracker\s*rms|trackrms|"
+            r"curriculum\s+vitae|resume\b|cv\b|profile\b)\b",
+            re.IGNORECASE
+        )
+        if _jt and _ARTIFACT_JT.search(_jt):
+            print(f"  ⚠  Rejected LLM job title containing system artefact: '{_jt}'")
+            _jt = ""
+        # Same check for employer
+        if _emp and _ARTIFACT_JT.search(_emp):
+            print(f"  ⚠  Rejected LLM employer containing system artefact: '{_emp}'")
             _emp = ""
 
         # Reject implausibly long values

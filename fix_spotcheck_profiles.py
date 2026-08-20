@@ -231,4 +231,18 @@ try:
 except Exception as e:
     print(f"   ✗ {e}")
 
+# 11. JOAQUIM JOSÉ GUERRA MATIAS (75101) — AI hallucinated "AeroProfessional Implementation"
+#     as a job title from letterhead text in a short/watermarked CV. Set to Unknown.
+print("11. JOAQUIM JOSÉ GUERRA MATIAS (75101) — fix job title → Unknown")
+try:
+    p = get_profile(75101)
+    current_title = (p.get("jobTitle") or "").strip()
+    if "aeroprofessional" in current_title.lower() or "implementation" in current_title.lower():
+        patch_profile(75101, {"jobTitle": "Unknown"})
+        print(f"   ✓ Job title '{current_title}' → Unknown")
+    else:
+        print(f"   ✓ Title is already clean: '{current_title}'")
+except Exception as e:
+    print(f"   ✗ {e}")
+
 print("\nDone. All corrections applied.")
