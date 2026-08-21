@@ -1,24 +1,16 @@
 @echo off
-:: Creates a Windows Scheduled Task to run the spot-check report every weekday at 4pm.
-:: Run this once — the task then runs automatically forever.
+:: Recreates the scheduled task. Run as Administrator.
 
-echo Setting up AeroTracker daily spot-check task...
+echo Fixing AeroTracker daily report task...
 
-schtasks /create ^
-  /tn "AeroTracker - Daily Spot-Check Report" ^
-  /tr "python C:\AeroTracker\spotcheck_report.py" ^
-  /sc WEEKLY ^
-  /d MON,TUE,WED,THU,FRI ^
-  /st 16:00 ^
-  /f
+schtasks /delete /tn "AeroTracker - Daily Spot-Check Report" /f 2>nul
+
+schtasks /create /tn "AeroTracker - Daily Spot-Check Report" /tr "py C:\AeroTracker\spotcheck_report.py" /sc WEEKLY /d MON,TUE,WED,THU,FRI /st 16:00 /f
 
 if %ERRORLEVEL% == 0 (
     echo.
-    echo Done! The spot-check report will now run automatically every weekday at 4pm.
-    echo It will save to the shared team folder and open in your browser.
+    echo Done! Report will run at 4pm every weekday.
 ) else (
-    echo.
-    echo Something went wrong. Try running this file as Administrator.
+    echo Something went wrong. Try running as Administrator.
 )
-
 pause

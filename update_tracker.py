@@ -835,6 +835,12 @@ def build_candidate_index(jwt):
         c for c in incomplete_candidates
         if c["email_id"] not in _seen_inc and not _seen_inc.add(c["email_id"])
     ]
+    # Sort newest first: highest resource ID = most recently registered candidate.
+    # This ensures new registrations are always processed before old backlog profiles.
+    incomplete_candidates.sort(
+        key=lambda c: int(c["email_id"].replace("tracker:", "") or 0),
+        reverse=True
+    )
     print(f"  Candidates with incomplete profiles: {len(incomplete_candidates)}")
     return name_index, extra_skills, incomplete_candidates
 
