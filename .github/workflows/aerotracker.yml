@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
 
       - name: Restore Tracker candidate cache
         uses: actions/cache@v4
@@ -73,11 +74,14 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update state files [skip ci]"
-          if git push --force origin HEAD:main; then
-            echo "✓ State files committed and pushed"
-          else
-            echo "⚠  Push failed"
-          fi
+          # Pull latest then push — retries up to 3 times to handle concurrent runs
+          for i in 1 2 3; do
+            git pull --rebase origin master && git push origin master && echo "✓ State files committed and pushed" && exit 0
+            echo "Retrying push (attempt $i)..."
+            sleep 5
+          done
+          echo "⚠ Push failed after 3 attempts"
+          exit 1
 
   # ── Daily spot-check email at 4pm UK ─────────────────────────────────────────
   spot-check:
@@ -90,6 +94,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -121,6 +126,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -149,4 +155,10 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update pending CV watchlist [skip ci]"
-          git push --force origin HEAD:main || echo "⚠ Push failed"
+          for i in 1 2 3; do
+            git pull --rebase origin master && git push origin master && echo "✓ Watchlist committed and pushed" && exit 0
+            echo "Retrying push (attempt $i)..."
+            sleep 5
+          done
+          echo "⚠ Push failed after 3 attempts"
+          exit 1
