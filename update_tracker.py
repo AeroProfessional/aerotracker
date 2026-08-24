@@ -7128,20 +7128,8 @@ if __name__ == "__main__":
             pass
 
         try:
-            if DRY_RUN or TEST_MODE > 0 or os.environ.get("GITHUB_ACTIONS") == "true":
-                # GitHub Actions: run once and exit — the scheduler handles re-running
-                main()
-            else:
-                run_number = 0
-                while True:
-                    run_number += 1
-                    result = main()
-                    if result == "done":
-                        print("\n  Nothing left. Sleeping 5 minutes...")
-                        time.sleep(300)
-                        run_number = 0
-                    else:
-                        time.sleep(60)
+            # Always run once and exit — Task Scheduler (or GitHub Actions) handles re-running.
+            main()
         finally:
             try:
                 os.remove(LOCK_FILE)
