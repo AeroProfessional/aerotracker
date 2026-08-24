@@ -23,7 +23,7 @@ except Exception as e:
 DAILY_LOG_FILE  = os.path.join(SCRIPT_DIR, "daily_updates.json")
 PENDING_CV_FILE = os.path.join(SCRIPT_DIR, "pending_cv.json")
 SAMPLE_SIZE     = 15
-SHARED_FOLDER   = r"C:\Users\EmilyWalton\Aeroprofessional Limited\Aeroprofessional - Documents\Aeropro\Admin\Admin Team"
+SHARED_FOLDER   = r"C:\Users\EmilyWalton\Aeroprofessional Limited\Aeroprofessional - Documents\Aeropro\Admin\Admin Team\Claude"
 
 # ── Load daily updates ────────────────────────────────────────────────────────
 try:
