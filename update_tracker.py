@@ -18,6 +18,11 @@
 """
 
 import re, json, time, io, os, datetime, smtplib, requests, sys, threading
+# Ensure UTF-8 output on Windows (handles tick/cross symbols in log files)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -6808,9 +6813,14 @@ def main():
             print(f"  ✓ {len(email_candidates)} unique candidate(s) found")
             candidates_to_process = email_candidates
         else:
-            print("  No candidates loaded — could not read emails from any source.")
-            send_run_summary_email(0, 0, 0, [("EMAIL SOURCE FAILURE", "Could not read candidates from any email source.")])
-            return
+            print("  No candidates loaded from Outlook — falling back to Tracker direct scan.")
+            if tracker_incomplete:
+                print(f"  ✓ Using {len(tracker_incomplete)} incomplete profile(s) from Tracker scan")
+                candidates_to_process = tracker_incomplete
+            else:
+                print("  No incomplete profiles found in Tracker either — nothing to do.")
+                send_run_summary_email(0, 0, 0, [("NO WORK", "No email candidates and no incomplete Tracker profiles found.")])
+                return
     else:
         # GitHub Actions: Microsoft 365 basic auth is blocked — read from Tracker directly.
         # The build_candidate_index scan already identified candidates with incomplete profiles.
