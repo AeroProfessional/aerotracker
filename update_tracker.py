@@ -6800,36 +6800,15 @@ def main():
         except Exception as e:
             print(f"  ⚠  Could not save cache: {e}")
 
-    # ── Read candidates from Outlook (or Tracker directly on GitHub Actions) ────
-    ON_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
+    # ── Read candidates directly from Tracker scan ───────────────────────────
     candidates_to_process = []
 
-    if not ON_GITHUB_ACTIONS:
-        # Local: read from Outlook email folder as normal
-        folder_label = EMAIL_SUBFOLDER if EMAIL_SOURCE == "subfolder" else "Support Inbox"
-        print(f"\nReading candidates from Outlook ({folder_label})...")
-        email_candidates = read_candidates_from_email()
-        if email_candidates:
-            print(f"  ✓ {len(email_candidates)} unique candidate(s) found")
-            candidates_to_process = email_candidates
-        else:
-            print("  No candidates loaded from Outlook — falling back to Tracker direct scan.")
-            if tracker_incomplete:
-                print(f"  ✓ Using {len(tracker_incomplete)} incomplete profile(s) from Tracker scan")
-                candidates_to_process = tracker_incomplete
-            else:
-                print("  No incomplete profiles found in Tracker either — nothing to do.")
-                send_run_summary_email(0, 0, 0, [("NO WORK", "No email candidates and no incomplete Tracker profiles found.")])
-                return
-    else:
-        # GitHub Actions: Microsoft 365 basic auth is blocked — read from Tracker directly.
-        # The build_candidate_index scan already identified candidates with incomplete profiles.
-        print(f"\nRunning on GitHub Actions — reading incomplete profiles from Tracker scan...")
-        if not tracker_incomplete:
-            print("  No incomplete profiles found in Tracker — nothing to do.")
-            return "done"
-        print(f"  ✓ {len(tracker_incomplete)} candidate(s) with incomplete profiles found")
-        candidates_to_process = tracker_incomplete
+    print(f"\nReading incomplete profiles from Tracker scan...")
+    if not tracker_incomplete:
+        print("  No incomplete profiles found in Tracker — nothing to do.")
+        return
+    print(f"  ✓ {len(tracker_incomplete)} candidate(s) with incomplete profiles found")
+    candidates_to_process = tracker_incomplete
 
     # ── Load processed-candidate tracking (prevents re-processing) ────────────
     PROCESSED_FILE = "tracker_processed.json"
