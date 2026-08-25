@@ -4,12 +4,7 @@ permissions:
   contents: write          # allows the bot to commit state files back
 
 on:
-  push:
-    branches: [master]
-  schedule:
-    - cron: "0 * * * *"      # hourly — process new registrations
-    - cron: "0 15 * * *"     # 3pm UTC (4pm UK) — spot-check + no-CV report
-  workflow_dispatch:          # manual trigger from GitHub Actions tab
+  workflow_dispatch:          # manual trigger only — scheduling handled by Windows Task Scheduler
 
 jobs:
 
@@ -74,10 +69,14 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update state files [skip ci]"
+          # Discard any leftover unstaged files (e.g. tracker_cache.json) so rebase works
+          git checkout -- . 2>/dev/null || true
+          git clean -fd 2>/dev/null || true
           # Pull latest then push — retries up to 3 times to handle concurrent runs
           for i in 1 2 3; do
             git pull --rebase origin master && git push origin master && echo "✓ State files committed and pushed" && exit 0
             echo "Retrying push (attempt $i)..."
+            git checkout -- . 2>/dev/null || true
             sleep 5
           done
           echo "⚠ Push failed after 3 attempts"
