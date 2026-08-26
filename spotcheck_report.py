@@ -23,7 +23,7 @@ except Exception as e:
 DAILY_LOG_FILE  = os.path.join(SCRIPT_DIR, "daily_updates.json")
 PENDING_CV_FILE = os.path.join(SCRIPT_DIR, "pending_cv.json")
 SAMPLE_SIZE     = 15
-SHARED_FOLDER   = r"C:\Users\EmilyWalton\Aeroprofessional Limited\Aeroprofessional - Documents\Aeropro\Admin\Admin Team\Claude"
+SHARED_FOLDER   = os.path.join(os.path.expanduser("~"), "Aeroprofessional Limited", "Aeroprofessional - Documents", "Aeropro", "Admin", "Admin Team", "Claude")
 
 # ── Load daily updates ────────────────────────────────────────────────────────
 try:
@@ -43,7 +43,9 @@ if not updates:
             check_date = d
             break
 
-sample = random.sample(updates, min(SAMPLE_SIZE, len(updates)))
+# Show the most recently registered candidates (highest Tracker IDs) first
+updates_sorted = sorted(updates, key=lambda c: int(c.get("id", 0)), reverse=True)
+sample = updates_sorted[:SAMPLE_SIZE]
 
 # ── Load pending CV list ──────────────────────────────────────────────────────
 try:
