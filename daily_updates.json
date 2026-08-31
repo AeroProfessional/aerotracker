@@ -1,71 +1,85 @@
 {
   "2026-08-31": [
     {
-      "id": 93990,
-      "name": "Christopher Ralph",
-      "job_title": "B737-800 Captain",
-      "employer": "Virgin Atlantic, Boeing 787",
+      "id": 73153,
+      "name": "Kerem Koray",
+      "job_title": "B777 Captain",
+      "employer": "Turkish Airlines",
       "work_type": "Flight Deck",
       "skills": [
+        "B737-NG",
         "B777",
         "B787",
+        "EASA",
+        "Captain",
+        "TRI",
+        "Swiss",
+        "Ireland"
+      ]
+    },
+    {
+      "id": 132398,
+      "name": "Faisal Mukhtar",
+      "job_title": "Logistics Supervisor - Engineering",
+      "employer": "Engineering Store",
+      "work_type": "Engineering",
+      "skills": [
+        "Pakistani"
+      ]
+    },
+    {
+      "id": 134090,
+      "name": "Balaji Narsugari",
+      "job_title": "Unknown",
+      "employer": "Unknown",
+      "work_type": "Managment",
+      "skills": [
+        "Indian"
+      ]
+    },
+    {
+      "id": 115471,
+      "name": "Bel\u00e9n  Bartolini",
+      "job_title": "General Manager",
+      "employer": "Circo Restaurant",
+      "work_type": "Cabin Crew",
+      "skills": [
+        "Argentinian"
+      ]
+    },
+    {
+      "id": 113317,
+      "name": "Nada Medani",
+      "job_title": "Operations Controller",
+      "employer": "Executive Jet Charter",
+      "work_type": "Operations, Managment",
+      "skills": [
+        "Indian"
+      ]
+    },
+    {
+      "id": 128314,
+      "name": "Dimas Avianto",
+      "job_title": "B737-800 First Officer",
+      "employer": "Lion Air",
+      "work_type": "Flight Deck",
+      "skills": [
+        "B737-NG",
         "ICAO",
         "First Officer",
         "B737-800",
-        "B737-NG",
-        "United Kingdom"
+        "Chinese",
+        "Indonesia"
       ]
     },
     {
-      "id": 113204,
-      "name": "Sohan Gamare",
-      "job_title": "Technical Officer",
-      "employer": "Acumen Aviation",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Indian"
-      ]
-    },
-    {
-      "id": 122339,
-      "name": "Christos Grigorakis",
-      "job_title": "Flight Operations Officer",
-      "employer": "HELVETIC AIRWAYS",
+      "id": 97181,
+      "name": "Daniel Alves Da Cunha",
+      "job_title": "Civil Aviation Specialyst",
+      "employer": "WORK CIVIL AVIATION AGENCY",
       "work_type": "Operations, Managment",
       "skills": [
-        "Greek"
-      ]
-    },
-    {
-      "id": 139384,
-      "name": "Muhammad Ahmed",
-      "job_title": "Powered Hoist Inspector",
-      "employer": "Azure Systems Pvt. Ltd. \u2014 Mumbai",
-      "work_type": "Managment",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 138637,
-      "name": "Ilona Shkil",
-      "job_title": "Senior Cabin Crew",
-      "employer": "Jump Air",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Ukrainian"
-      ]
-    },
-    {
-      "id": 106589,
-      "name": "Francis Keith Devaney",
-      "job_title": "Director of Operations",
-      "employer": "Sligo Regional Airport, Sligo Ireland",
-      "work_type": "Managment",
-      "skills": [
-        "Irish"
+        "Brazilian"
       ]
     }
   ]
