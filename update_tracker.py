@@ -846,6 +846,13 @@ def build_candidate_index(jwt):
         key=lambda c: int(c["email_id"].replace("tracker:", "") or 0),
         reverse=True
     )
+    # Cap the list so we only keep the most recently registered incomplete profiles.
+    # No need to scan the whole 107k backlog — focus on the last MAX_BACKLOG_CANDIDATES
+    # registrations. Old incomplete profiles that have never applied for a job can wait.
+    MAX_BACKLOG = int(os.environ.get("MAX_BACKLOG_CANDIDATES", "10000"))
+    if len(incomplete_candidates) > MAX_BACKLOG:
+        print(f"  Keeping most recent {MAX_BACKLOG} incomplete profiles (dropping {len(incomplete_candidates) - MAX_BACKLOG} older ones)")
+        incomplete_candidates = incomplete_candidates[:MAX_BACKLOG]
     print(f"  Candidates with incomplete profiles: {len(incomplete_candidates)}")
     return name_index, extra_skills, incomplete_candidates
 
@@ -6751,6 +6758,12 @@ def main():
                 licence_country_lookup = cache.get("licence_country_lookup", {})
                 name_index    = cache["names"]
                 tracker_incomplete = cache.get("incomplete_candidates", [])
+                # Cap to the most recently registered candidates — same limit as build_candidate_index.
+                # This applies immediately when loading from the existing cache so we don't
+                # inherit a 63k backlog from before this fix was added.
+                _max_backlog = int(os.environ.get("MAX_BACKLOG_CANDIDATES", "10000"))
+                if len(tracker_incomplete) > _max_backlog:
+                    tracker_incomplete = tracker_incomplete[:_max_backlog]
                 if not country_skills_set or not nationality_ids or not licence_country_ids:
                     print(f"\n  Cache missing country skill data — forcing rebuild...")
                 else:
@@ -6856,9 +6869,16 @@ def main():
                 unprocessed.append(c)
 
     candidates_to_process = unprocessed
-    # Shuffle so each hourly run processes a different random batch
+    # candidates_to_process is sorted newest-first.
+    # Shuffle only within the top 1000 so:
+    #   (a) we always prioritise recently registered candidates, and
+    #   (b) a single failing candidate (e.g. no CV yet) doesn't permanently
+    #       block all the others on the same run.
     import random as _random
-    _random.shuffle(candidates_to_process)
+    _top = min(1000, len(candidates_to_process))
+    _pool = candidates_to_process[:_top]
+    _random.shuffle(_pool)
+    candidates_to_process = _pool + candidates_to_process[_top:]
     total = len(candidates_to_process)
 
     if already_done_count:
