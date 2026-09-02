@@ -7098,8 +7098,26 @@ if __name__ == "__main__":
         # ── Lock file: prevent multiple instances running simultaneously ────────
         LOCK_FILE = "update_tracker.lock"
         if os.path.exists(LOCK_FILE):
-            print("  ⚠  Another instance is already running (lock file exists). Exiting.")
-            sys.exit(0)
+            # Check if the PID in the lock file is still running.
+            # If not, the lock is stale (e.g. laptop was shut down mid-run) — clear it.
+            _stale = True
+            try:
+                with open(LOCK_FILE) as _lf:
+                    _locked_pid = int(_lf.read().strip())
+                import psutil
+                if psutil.pid_exists(_locked_pid):
+                    _stale = False
+            except Exception:
+                pass  # can't read PID or psutil unavailable — treat as stale
+            if _stale:
+                print("  ℹ  Stale lock file found (previous run was killed) — clearing it.")
+                try:
+                    os.remove(LOCK_FILE)
+                except Exception:
+                    pass
+            else:
+                print("  ⚠  Another instance is already running (lock file exists). Exiting.")
+                sys.exit(0)
         try:
             with open(LOCK_FILE, "w") as _lf:
                 _lf.write(str(os.getpid()))

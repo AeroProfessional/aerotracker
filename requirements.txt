@@ -14,6 +14,7 @@ pdfplumber>=0.10.0       # PDF table extraction fallback
 python-docx>=1.1.0       # .docx CV reading
 
 msal>=1.26.0              # Microsoft Graph API authentication (replaces IMAP/SMTP basic auth)
+psutil>=5.9.0             # stale lock file detection (checks if previous PID is still running)
 
 # Optional — only needed on Windows for Outlook COM integration
 # pywin32>=306
