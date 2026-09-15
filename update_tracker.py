@@ -6740,7 +6740,7 @@ def main():
 
     # ── Load from cache if available (avoids ~60s index rebuild) ─────────────────
     CACHE_FILE = "tracker_cache.json"
-    CACHE_MAX_MINS = 10080  # rebuild every 7 days
+    CACHE_MAX_MINS = 525600  # rebuild every 365 days
 
     cache_loaded = False
     licence_country_lookup = {}
