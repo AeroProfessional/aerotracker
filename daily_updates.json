@@ -1,196 +1,174 @@
 {
   "2026-10-16": [
     {
-      "id": 99276,
-      "name": "Irina Carp",
-      "job_title": "Senior Cabin Crew ",
-      "employer": "Helvetic Airways",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Ukrainian"
-      ]
-    },
-    {
-      "id": 122107,
-      "name": "Jaspreet Kaur",
-      "job_title": "Unknown",
-      "employer": "Sainsbury's",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "United Kingdom"
-      ]
-    },
-    {
-      "id": 138759,
-      "name": "Hadi Alswaid",
-      "job_title": "Material & Production Control Instructor",
-      "employer": "Royal Saudi Air Force",
+      "id": 141796,
+      "name": "Mustafa Hassan",
+      "job_title": "Real Estate Broker",
+      "employer": "Success Real Estate",
       "work_type": "Managment",
-      "skills": []
-    },
-    {
-      "id": 122297,
-      "name": "Guilherme Ribeiro",
-      "job_title": "Pilot",
-      "employer": "Bartolini Air",
-      "work_type": "Flight Deck",
       "skills": [
-        "ICAO",
-        "Portuguese"
+        "Pakistani"
       ]
     },
     {
-      "id": 27171,
-      "name": "Francisco Javier Palomares Maruenda",
+      "id": 136405,
+      "name": "Noushad Ali Khan",
+      "job_title": "Store Warehouse & Logistics Manager",
+      "employer": "Unknown",
+      "work_type": "Operations, Managment",
+      "skills": [
+        "Qatari"
+      ]
+    },
+    {
+      "id": 137342,
+      "name": "Khodadad Asadpour",
+      "job_title": "BSc Aircraft Maintenance Engineering",
+      "employer": "ZAGROS AIRLINE",
+      "work_type": "Engineering",
+      "skills": [
+        "Australian"
+      ]
+    },
+    {
+      "id": 117905,
+      "name": "Anass Ismaili",
       "job_title": "Pilot",
-      "employer": "Bamboo Airways",
+      "employer": "Kristofferskolen",
       "work_type": "Flight Deck",
       "skills": [
         "A320",
-        "EASA",
-        "First Officer",
-        "Spanish",
-        "Spain"
-      ]
-    },
-    {
-      "id": 137368,
-      "name": "Mohamed Barakat",
-      "job_title": "Logis cs project Manager",
-      "employer": "POWER CHINA",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Chinese"
-      ]
-    },
-    {
-      "id": 139163,
-      "name": "Imran Khan",
-      "job_title": "Transportation Operations & Events Coordinator",
-      "employer": "Riyadh, Saudi Arabia",
-      "work_type": "Managment",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 90935,
-      "name": "A A",
-      "job_title": "Unknown",
-      "employer": "POB Enterprises Ltd",
-      "work_type": "Cabin Crew",
-      "skills": []
-    },
-    {
-      "id": 138549,
-      "name": "Marc  Ruiz",
-      "job_title": "Cabin Crew",
-      "employer": "Ryanair D.A.C",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew"
-      ]
-    },
-    {
-      "id": 137951,
-      "name": "Jessica  Tomey Medinabeitia",
-      "job_title": "Cabin Crew",
-      "employer": "Heston Airlines (Vilnius, Lithuania) (2022",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Business",
-        "Spanish"
-      ]
-    },
-    {
-      "id": 142203,
-      "name": "Vincent Chikwava",
-      "job_title": "Pilot",
-      "employer": "Mack Air Zimbabwe",
-      "work_type": "Flight Deck",
-      "skills": [
         "ICAO",
-        "Caravan",
-        "Zimbabwean"
+        "Danish"
       ]
     },
     {
-      "id": 93637,
-      "name": "Fran\u00e7oise Desbois",
-      "job_title": "VIP Flight Attendant",
-      "employer": "Air X Charter",
+      "id": 59409,
+      "name": "Diana Socoliuc",
+      "job_title": "Unknown",
+      "employer": "PrivatAir",
       "work_type": "Cabin Crew",
       "skills": [
         "VIP",
-        "French"
+        "Romanian"
       ]
     },
     {
-      "id": 131831,
-      "name": "Mohamed Ahmed",
-      "job_title": "Acting Maintenance Manager",
-      "employer": "ALFA Airline, Khartoum, Sudan",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "B2",
-        "Sudanese"
-      ]
-    },
-    {
-      "id": 54048,
-      "name": "Anna Nagadowska",
-      "job_title": "Premium Zones Flight Attendant",
-      "employer": "Etihad Aviation Group",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Polish"
-      ]
-    },
-    {
-      "id": 127795,
-      "name": "John Marroni",
-      "job_title": "Line Maintenance Manger",
-      "employer": "Allegiant Airlines",
-      "work_type": "Engineering",
-      "skills": [
-        "Peruvian"
-      ]
-    },
-    {
-      "id": 125410,
-      "name": "Myriam Laghmari",
-      "job_title": "Health & Safety and Security Officer",
-      "employer": "Hub Control \u2013 Air France",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "French"
-      ]
-    },
-    {
-      "id": 137467,
-      "name": "Mahmoud Eltablawy",
-      "job_title": "Supply Chain & Procurement Manager",
-      "employer": "EDF Power Solutions Middle East",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Egyptian"
-      ]
-    },
-    {
-      "id": 134711,
-      "name": "Fada Mohammad Toolabi",
-      "job_title": "Pilot (B737 captain)",
-      "employer": "Varesh AirLine",
+      "id": 88725,
+      "name": "Miguel Angel Alvarez Berraco",
+      "job_title": "DHC-8 Captain",
+      "employer": "CONTACT DETAILS",
       "work_type": "Flight Deck",
       "skills": [
         "B737-NG",
         "ICAO",
         "Captain",
-        "Iranian"
+        "TRI",
+        "DHC-8",
+        "TRE",
+        "SFI",
+        "Spanish",
+        "United States"
+      ]
+    },
+    {
+      "id": 134275,
+      "name": "Heidi Feldbauer",
+      "job_title": "flight attendant",
+      "employer": "CMA CGM",
+      "work_type": "Cabin Crew",
+      "skills": [
+        "German"
+      ]
+    },
+    {
+      "id": 89559,
+      "name": "Eliseo Labozzetta",
+      "job_title": "Unknown",
+      "employer": "Braceria",
+      "work_type": "Cabin Crew",
+      "skills": [
+        "Senior / Cabin Manager",
+        "Italian"
+      ]
+    },
+    {
+      "id": 142946,
+      "name": "Irfan Abdul Rehman",
+      "job_title": "Lecturer/Instructor-",
+      "employer": "EMIRATES AVIATION UNIVERSITY",
+      "work_type": "Operations, Managment",
+      "skills": [
+        "Indian"
+      ]
+    },
+    {
+      "id": 88441,
+      "name": "Federico Congiu",
+      "job_title": "Flight Planning Officer",
+      "employer": "easyJet UK",
+      "work_type": "Operations, Managment",
+      "skills": [
+        "Italian"
+      ]
+    },
+    {
+      "id": 124470,
+      "name": "Islam  Mohamed",
+      "job_title": "B1.1 Aircraft Engineer - Line Maintenance",
+      "employer": "Sky Vision Airlines",
+      "work_type": "Engineering",
+      "skills": [
+        "B1",
+        "B2",
+        "Egyptian"
+      ]
+    },
+    {
+      "id": 90894,
+      "name": "Matthew Boraman",
+      "job_title": "Deputy Quality (Compliance) Manager",
+      "employer": "Dubai Air Wing / Helidubai",
+      "work_type": "Operations, Managment",
+      "skills": [
+        "Italian"
+      ]
+    },
+    {
+      "id": 131908,
+      "name": "Mohamed Ali Ahmed",
+      "job_title": "Pilot",
+      "employer": "Noricom",
+      "work_type": "Flight Deck",
+      "skills": [
+        "A320",
+        "EASA",
+        "First Officer",
+        "Norwegian",
+        "Norway"
+      ]
+    },
+    {
+      "id": 115122,
+      "name": "Dries Maathuis",
+      "job_title": "Ahmet Demirci",
+      "employer": "Unknown",
+      "work_type": "Managment",
+      "skills": [
+        "Danish"
+      ]
+    },
+    {
+      "id": 113731,
+      "name": "Peerawas  Singtoroj",
+      "job_title": "A320 First Officer",
+      "employer": "Heston Airlines",
+      "work_type": "Flight Deck",
+      "skills": [
+        "A320",
+        "ICAO",
+        "First Officer",
+        "Thai"
       ]
     },
     {
@@ -209,329 +187,57 @@
       ]
     },
     {
-      "id": 140260,
-      "name": "Sanjeev Kumar",
-      "job_title": "Senior Manager - Warranty & Insurance",
-      "employer": "Warranty Engineer \u2014 Air Arabia",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Turkish"
-      ]
-    },
-    {
-      "id": 136595,
-      "name": "Nino Dif-Yaiche",
-      "job_title": "A319 Senior First Officer",
-      "employer": "Airbus A320 Family | Bulgaria Air",
+      "id": 130728,
+      "name": "Rodrigo Ribeiro",
+      "job_title": "A320 Flight Instructor",
+      "employer": "Unknown",
       "work_type": "Flight Deck",
       "skills": [
+        "Flight instructor",
         "A320",
         "ICAO",
-        "First Officer",
-        "A319",
-        "A321",
-        "Bulgarian",
-        "United States"
+        "Portuguese"
       ]
     },
     {
-      "id": 78564,
-      "name": "David Burnett",
-      "job_title": "Unknown",
-      "employer": "Etihad Aviation Training L.L.C",
-      "work_type": "Managment",
+      "id": 143419,
+      "name": "Inkar Saualkhanova",
+      "job_title": "Flight supervisor / Cabin crew",
+      "employer": "FLYARYSTAN",
+      "work_type": "Cabin Crew",
       "skills": [
-        "United Kingdom"
+        "Main Crew",
+        "Russian Federation"
       ]
     },
     {
-      "id": 136629,
-      "name": "Moin Khan",
-      "job_title": "Assistant Manager II",
-      "employer": "Master Motors Ltd",
-      "work_type": "Operations, Managment",
+      "id": 107661,
+      "name": "Reet Kaur",
+      "job_title": "Security Officer",
+      "employer": "Wilson James",
+      "work_type": "Cabin Crew",
       "skills": [
-        "Chinese"
-      ]
-    },
-    {
-      "id": 143122,
-      "name": "Lihua Wang",
-      "job_title": "A330 Captain",
-      "employer": "Airbus A330",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "A330",
-        "B737-NG",
-        "ICAO",
-        "Captain",
-        "China"
-      ]
-    },
-    {
-      "id": 139930,
-      "name": "Abu Faisal",
-      "job_title": "Head of Engineering | CAMO Post Holder",
-      "employer": "Akij Aviation Ltd (Dhaka",
-      "work_type": "Engineering",
-      "skills": [
-        "Bangladeshi"
-      ]
-    },
-    {
-      "id": 142143,
-      "name": "Jamie Briant",
-      "job_title": "Unknown",
-      "employer": "Riyadh Air (Start-up)",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "B2",
-        "Danish"
-      ]
-    },
-    {
-      "id": 139962,
-      "name": "Fawaz Alenazi",
-      "job_title": "Helicopter UH-60 Mechanic",
-      "employer": "GDC Middle east",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "B2",
-        "Canadian"
-      ]
-    },
-    {
-      "id": 143473,
-      "name": "Gaurav Chawla",
-      "job_title": "Business Operations & Customer Coordination",
-      "employer": "Sai Ram Traders",
-      "work_type": "Managment",
-      "skills": [
+        "Main Crew",
         "Indian"
       ]
     },
     {
-      "id": 74283,
-      "name": "Robert Taylor",
-      "job_title": "Selected Career Achievements",
-      "employer": "Group 2B, 2C Helicopters B2, C",
-      "work_type": "Managment",
-      "skills": [
-        "Danish"
-      ]
-    },
-    {
-      "id": 113556,
-      "name": "Sopiko  Nikatsadze",
-      "job_title": "Financial Controller",
-      "employer": "United Airports of Georgia",
-      "work_type": "Airport, Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Georgian"
-      ]
-    },
-    {
-      "id": 73836,
-      "name": "Kamel Zangar",
-      "job_title": "Store Sales Manager",
-      "employer": "CERTIFICATES",
+      "id": 124516,
+      "name": "Abir Ghazoui",
+      "job_title": "Flight Attendant Trainee",
+      "employer": "INTERSHIP AT AIRPORT IBN BATOUTA",
       "work_type": "Cabin Crew",
       "skills": [
-        "French"
+        "Main Crew"
       ]
     },
     {
-      "id": 113421,
-      "name": "Shabana Karamat",
+      "id": 85523,
+      "name": "Ella Smith",
       "job_title": "Unknown",
-      "employer": "ROYAL AIRPORT SERVICES",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 143202,
-      "name": "Sumit Sharma",
-      "job_title": "B737 Captain",
-      "employer": "Akasa Air",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ICAO",
-        "Captain",
-        "Philippines"
-      ]
-    },
-    {
-      "id": 142280,
-      "name": "Barbara Rauscher",
-      "job_title": "A320 Flight Captain",
-      "employer": "LUFTHANSA GROUP",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "B737-NG",
-        "DASH8",
-        "DASH8 Q400",
-        "ICAO",
-        "Captain",
-        "German"
-      ]
-    },
-    {
-      "id": 117519,
-      "name": "Rub\u00e9n  G\u00f3mez L\u00f3pez",
-      "job_title": "Cabin Crew",
-      "employer": "Air Hostess Alicante",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Spanish"
-      ]
-    },
-    {
-      "id": 83815,
-      "name": "Martin Williams",
-      "job_title": "Unknown",
-      "employer": "Linde HTD",
-      "work_type": "Operations",
-      "skills": [
-        "United Kingdom"
-      ]
-    },
-    {
-      "id": 137990,
-      "name": "Nuno  Miranda",
-      "job_title": "Cabin crew manager",
-      "employer": "Small Planet Airlines Amsterdam",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Dutch"
-      ]
-    },
-    {
-      "id": 138579,
-      "name": "Dmytro Sotnikov",
-      "job_title": "Cabin Crew Member",
-      "employer": "SkyUp Airlines",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "VIP",
-        "Ukrainian"
-      ]
-    },
-    {
-      "id": 142492,
-      "name": "Bianu Cristian",
-      "job_title": "B737NG First Officer",
-      "employer": "HelloJets",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ICAO",
-        "First Officer",
-        "B737NG",
-        "French"
-      ]
-    },
-    {
-      "id": 139519,
-      "name": "Yong Liu",
-      "job_title": "B757/767 Captain",
-      "employer": "SF airline , Shenzhen, Guangdong",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "B757",
-        "B777",
-        "ICAO",
-        "Captain",
-        "Australian",
-        "United States"
-      ]
-    },
-    {
-      "id": 138017,
-      "name": "Hassan Khan",
-      "job_title": "Unknown",
-      "employer": "Mumzworld.com",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 143404,
-      "name": "Zoe Brasseur",
-      "job_title": "Unknown",
-      "employer": "Ryanair",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "VIP",
-        "French"
-      ]
-    },
-    {
-      "id": 104954,
-      "name": "Asad khan Mohamed",
-      "job_title": "Captain",
-      "employer": "Kush Air",
-      "work_type": "Flight Deck",
-      "skills": [
-        "DASH8",
-        "DASH8 Q400",
-        "ICAO",
-        "Captain",
-        "TRE",
-        "TRI",
-        "Kenyan",
-        "Kenya"
-      ]
-    },
-    {
-      "id": 106519,
-      "name": "Ben Richardson",
-      "job_title": "EC155 Captain",
-      "employer": "Specialist Aviation Services",
-      "work_type": "Managment, Flight Deck",
-      "skills": [
-        "A109",
-        "EC155",
-        "ICAO",
-        "Captain",
-        "TRI",
-        "AW169",
-        "United Kingdom"
-      ]
-    },
-    {
-      "id": 117516,
-      "name": "Mohammad  Rahall",
-      "job_title": "Unknown",
-      "employer": "Royal Air Maroc",
-      "work_type": "Cabin Crew",
+      "employer": "Leaders Romans Group",
+      "work_type": "Head Office",
       "skills": []
-    },
-    {
-      "id": 89519,
-      "name": "Paulus Mongdong",
-      "job_title": "Unknown",
-      "employer": "Total Hours",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "ICAO",
-        "Captain",
-        "Indonesian",
-        "Indonesia"
-      ]
     },
     {
       "id": 83634,
@@ -544,730 +250,78 @@
       ]
     },
     {
-      "id": 115070,
-      "name": "Mehdi Benaissa",
-      "job_title": "Aviation Technical Assistant",
-      "employer": "Aviation Technical Assistant",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Algerian"
-      ]
-    },
-    {
-      "id": 139344,
-      "name": "Junaid Khan",
-      "job_title": "Fleet and System Supervisor",
-      "employer": "Ninja, the Supply Chain Company",
+      "id": 132544,
+      "name": "Sunil Kumar",
+      "job_title": "Assistant Manager",
+      "employer": "Engineering Logistics Support",
       "work_type": "Operations, Managment",
-      "skills": [
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 139897,
-      "name": "Riccardo Petrucci",
-      "job_title": "Chair of the ICCAIA Airworthiness Committee",
-      "employer": "ATR AMERICAS INC",
-      "work_type": "Managment",
-      "skills": [
-        "Italian"
-      ]
-    },
-    {
-      "id": 143435,
-      "name": "Maria Pressina Dogeno",
-      "job_title": "Virtual Assistant",
-      "employer": "Hospitality & Customer Service Chefpost Inc",
-      "work_type": "Managment",
-      "skills": [
-        "Philippines"
-      ]
-    },
-    {
-      "id": 138597,
-      "name": "Bilal Fayyaz Abbasi",
-      "job_title": "Production Support Officer",
-      "employer": "Emirates Engine Maintenance Centre",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 115122,
-      "name": "Dries Maathuis",
-      "job_title": "Ahmet Demirci",
-      "employer": "Unknown",
-      "work_type": "Managment",
       "skills": [
         "Danish"
       ]
     },
     {
-      "id": 131550,
-      "name": "Atar  Sedki",
-      "job_title": "Lead VVIP Flight attendant",
-      "employer": "Luxaviation Group, London / Paris",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Belgian"
-      ]
-    },
-    {
-      "id": 142598,
-      "name": "Fernando Artigas",
-      "job_title": "Capt. Q400.",
-      "employer": "Qazaq Air / VietJet Qazaqstan",
-      "work_type": "Flight Deck",
-      "skills": [
-        "DASH8 Q400",
-        "ICAO",
-        "Captain",
-        "Spanish"
-      ]
-    },
-    {
-      "id": 136994,
-      "name": "Paulo Santos",
-      "job_title": "B737 First Officer",
-      "employer": "Corendon Airlines Europe",
+      "id": 136611,
+      "name": "Tiago Ferreira",
+      "job_title": "B737-800 Captain",
+      "employer": "EuroAtlantic Airways, Sintra Drivor's liconso",
       "work_type": "Flight Deck",
       "skills": [
         "B737-NG",
         "ICAO",
-        "First Officer",
-        "B737-800",
-        "Portuguese"
-      ]
-    },
-    {
-      "id": 87072,
-      "name": "Reza Anooshehei",
-      "job_title": "A318 Captain",
-      "employer": "Atlas Global Airlines",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A300-600",
-        "A320",
-        "ICAO",
         "Captain",
-        "A318",
-        "Iranian"
+        "B737-800"
       ]
     },
     {
-      "id": 135194,
-      "name": "Visakh Sheela Chandran",
-      "job_title": "Assistant Operations Manager - Air Cargo",
-      "employer": "Air Cargo",
-      "work_type": "Operations, Managment",
+      "id": 143386,
+      "name": "Binaisha Mendonca",
+      "job_title": "Cabin Crew Member",
+      "employer": "NAS Air\uf020",
+      "work_type": "Cabin Crew",
       "skills": [
+        "VIP",
         "Indian"
       ]
     },
     {
-      "id": 130765,
-      "name": "Ahmed\u00a0  Ahmed",
-      "job_title": "Cabin Crew",
-      "employer": "Air Cairo",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "VIP",
-        "Egyptian"
-      ]
-    },
-    {
-      "id": 53603,
-      "name": "Adrian Grossniklaus",
-      "job_title": "Captain",
-      "employer": "Arik Air Ltd",
+      "id": 74085,
+      "name": "Chris Thompson",
+      "job_title": "ATR42 Captain",
+      "employer": "Smartlynx Airlines",
       "work_type": "Flight Deck",
       "skills": [
+        "A320",
+        "A340",
+        "A340-500/600",
+        "ATR42",
+        "ATR42/72",
         "ICAO",
-        "DASH8 Q400",
-        "TRE",
-        "TRI",
-        "Swiss",
-        "Switzerland"
+        "Captain",
+        "Qatari",
+        "United Kingdom"
       ]
     },
     {
-      "id": 139409,
-      "name": "Muhammad Bilal",
+      "id": 143036,
+      "name": "Abd el hakim Bourabia",
       "job_title": "Unknown",
-      "employer": "Technical College Jhang",
+      "employer": "Community Nursing Service",
       "work_type": "Cabin Crew",
       "skills": [
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 134104,
-      "name": "Abdul Khan",
-      "job_title": "aircraft engineer",
-      "employer": "areopeople",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 109426,
-      "name": "Precious Mazibuko",
-      "job_title": "Senior Cabin Crew",
-      "employer": "Lift",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "EASA",
-        "South African"
-      ]
-    },
-    {
-      "id": 143324,
-      "name": "Samira Rifki",
-      "job_title": "VIP Cabin Crew",
-      "employer": "Sarah Airways",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
+        "Main Crew",
         "French"
       ]
     },
     {
-      "id": 95439,
-      "name": "Mathieu Gosset",
-      "job_title": "Pilot",
-      "employer": "Swissport Cargo Services [ 31",
+      "id": 89737,
+      "name": "David Johnson",
+      "job_title": "Flight Instructor",
+      "employer": "AVIATION WORK",
       "work_type": "Flight Deck",
       "skills": [
-        "A320",
+        "Flight instructor",
         "ICAO",
-        "Belgian"
-      ]
-    },
-    {
-      "id": 88438,
-      "name": "Anthony Cockburn",
-      "job_title": "Talent Acquisition Specialist, Human Resources",
-      "employer": "Line Up Aviation, Horsham, West Sussex",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Qatari"
-      ]
-    },
-    {
-      "id": 120626,
-      "name": "Roumaissa Derdouha",
-      "job_title": "Office Clerk",
-      "employer": "Passionate about aviation",
-      "work_type": "Managment",
-      "skills": [
-        "Algerian"
-      ]
-    },
-    {
-      "id": 137948,
-      "name": "Katarzyna  Popis",
-      "job_title": "Unknown",
-      "employer": "Fly4 Airlines [Seasonal Contract]",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "VIP",
-        "Polish"
-      ]
-    },
-    {
-      "id": 143225,
-      "name": "Mohamed Abdalla",
-      "job_title": "Sales Manager",
-      "employer": "Al Huzaifa Furniture",
-      "work_type": "Managment",
-      "skills": [
-        "Egyptian"
-      ]
-    },
-    {
-      "id": 141993,
-      "name": "Thanveru Deen",
-      "job_title": "Unknown",
-      "employer": "Unknown",
-      "work_type": "Cabin Crew",
-      "skills": []
-    },
-    {
-      "id": 138467,
-      "name": "Ahmed Maghawrey",
-      "job_title": "Warehouse and Logistics Manager",
-      "employer": "Majid Al Futtaim Retail",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Egyptian"
-      ]
-    },
-    {
-      "id": 99347,
-      "name": "Jonas Hodge",
-      "job_title": "Captain",
-      "employer": "Unknown",
-      "work_type": "Flight Deck",
-      "skills": [
-        "ICAO",
-        "Captain"
-      ]
-    },
-    {
-      "id": 115361,
-      "name": "Olga Konstantynova",
-      "job_title": "Cabin crew member",
-      "employer": "Safety consciousness",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Ukrainian"
-      ]
-    },
-    {
-      "id": 139974,
-      "name": "Christos Chatzidarellis",
-      "job_title": "Captain B737NG",
-      "employer": "Flybaghdad",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B727",
-        "B737-NG",
-        "B747-400",
-        "ICAO",
-        "Captain",
-        "TRI",
-        "B737NG",
-        "TRE",
-        "Greek",
-        "United States"
-      ]
-    },
-    {
-      "id": 137258,
-      "name": "Aditi Maharaj",
-      "job_title": "Cabin Crew",
-      "employer": "Nephrology Rooms",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "South African"
-      ]
-    },
-    {
-      "id": 134784,
-      "name": "Safdar Mahmood",
-      "job_title": "Aircraft Engineer Avionics",
-      "employer": "Northern Technik MRO",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "B2",
-        "Pakistani"
-      ]
-    },
-    {
-      "id": 143455,
-      "name": "Abdul  Rahman",
-      "job_title": "Unknown",
-      "employer": "Cognizant Technology Solutions",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 140497,
-      "name": "Gabriel Quesada Rivero",
-      "job_title": "B737NG Instructor 737 NG/MAX",
-      "employer": "Aeromexico",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ERJ145",
-        "ICAO",
-        "Captain",
-        "B737NG",
-        "French",
-        "United States"
-      ]
-    },
-    {
-      "id": 83916,
-      "name": "Mark Williams",
-      "job_title": "Compliance Auditor",
-      "employer": "TUI CAMO",
-      "work_type": "Operations, Managment",
-      "skills": []
-    },
-    {
-      "id": 125888,
-      "name": "Artur Fortuna",
-      "job_title": "Pilot",
-      "employer": "Fly One Romania",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "ICAO",
-        "Captain",
-        "TRI",
-        "Burmese",
-        "Moldova"
-      ]
-    },
-    {
-      "id": 138455,
-      "name": "Nabil Dalwai",
-      "job_title": "Senior Project Estimator FF&E",
-      "employer": "AlShaya Enterprises",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 70016,
-      "name": "Michael Pentland",
-      "job_title": "B777-300 Captain",
-      "employer": "Unknown",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B757",
-        "B767",
-        "B777",
-        "B787",
-        "ICAO",
-        "First Officer",
-        "TRI",
-        "United Kingdom"
-      ]
-    },
-    {
-      "id": 132341,
-      "name": "Per Molander",
-      "job_title": "A330 Captain",
-      "employer": "One Air",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A330",
-        "A340",
-        "B737-NG",
-        "Saab",
-        "ICAO",
-        "Captain",
-        "TRE",
-        "American Samoan",
-        "United States"
-      ]
-    },
-    {
-      "id": 139658,
-      "name": "Tamrat Amsalu",
-      "job_title": "Technical Manager",
-      "employer": "Ethiopian Airlines",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "B2",
-        "Ethiopian"
-      ]
-    },
-    {
-      "id": 139966,
-      "name": "Abdul Kareem Mohamed Ibrahim",
-      "job_title": "Unknown",
-      "employer": "Air Bahrain",
-      "work_type": "Engineering",
-      "skills": [
-        "B1",
-        "Bahraini"
-      ]
-    },
-    {
-      "id": 120705,
-      "name": "Constantin Raiu",
-      "job_title": "cabin crew",
-      "employer": "Cabin Crew Initial Course FLY JET Academy",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Romanian"
-      ]
-    },
-    {
-      "id": 61278,
-      "name": "Fadi Sibai",
-      "job_title": "Senior Recruitment Consultant",
-      "employer": "Emirates Airline",
-      "work_type": "Cabin Crew, Managment, Engineering, Operations, Head Office",
-      "skills": [
-        "Omani"
-      ]
-    },
-    {
-      "id": 143044,
-      "name": "Jenipher Mitau",
-      "job_title": "Unknown",
-      "employer": "Emirates Airline",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "VIP",
-        "United Arab Emirates"
-      ]
-    },
-    {
-      "id": 129902,
-      "name": "Ilia Medvedev",
-      "job_title": "B737 Captain",
-      "employer": "Russia",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ICAO",
-        "Captain",
-        "TRI",
-        "Russian Federation"
-      ]
-    },
-    {
-      "id": 132070,
-      "name": "Thomas George",
-      "job_title": "Senior Planning and Procurement officer",
-      "employer": "Modern Electronics Company Ltd (SONY)",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 140217,
-      "name": "Ahmed Al dosari",
-      "job_title": "Aircraft Line Maintenance",
-      "employer": "SAUDIA TECHNIC",
-      "work_type": "Engineering",
-      "skills": []
-    },
-    {
-      "id": 77462,
-      "name": "Filip Zivkovic",
-      "job_title": "Guest Experience Cabin Crew",
-      "employer": "Etihad Airways moments of notice",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Serbian"
-      ]
-    },
-    {
-      "id": 115360,
-      "name": "Rowald Kock",
-      "job_title": "A320 Captain",
-      "employer": "Aruba Airlines",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "ICAO",
-        "Captain",
-        "Aruban",
-        "United States"
-      ]
-    },
-    {
-      "id": 141812,
-      "name": "Carmen Balaur",
-      "job_title": "Senior Cabin Crew",
-      "employer": "Legend Airlines",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Romanian"
-      ]
-    },
-    {
-      "id": 120650,
-      "name": "Hashim Elhassan",
-      "job_title": "B737 First Officer",
-      "employer": "Khartoum Khartoum Current BADR AIRLINE",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ICAO",
-        "First Officer",
-        "Sudanese"
-      ]
-    },
-    {
-      "id": 131537,
-      "name": "Sara Ikram Zahouani Erradi",
-      "job_title": "Flight Attendant ",
-      "employer": "GullivAir",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Spanish"
-      ]
-    },
-    {
-      "id": 143020,
-      "name": "Joshua Kwam",
-      "job_title": "C208 Line Pilot and C208 Training Captain",
-      "employer": "Flymode Flight Center",
-      "work_type": "Flight Deck",
-      "skills": [
-        "C208",
-        "ICAO",
-        "Captain",
-        "Sudanese"
-      ]
-    },
-    {
-      "id": 117965,
-      "name": "Abinay Garidepalli",
-      "job_title": "Flight Monitoring Agent",
-      "employer": "INDIGO AIRLINE",
-      "work_type": "Managment",
-      "skills": [
-        "Indian"
-      ]
-    },
-    {
-      "id": 89559,
-      "name": "Eliseo Labozzetta",
-      "job_title": "Unknown",
-      "employer": "Braceria",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Senior / Cabin Manager",
-        "Italian"
-      ]
-    },
-    {
-      "id": 134488,
-      "name": "Carlos Alberto  Morales Vargas",
-      "job_title": "of Pilot, First Officer / Captain",
-      "employer": "Present Day Current Silkway Cargo Airline",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Colombian"
-      ]
-    },
-    {
-      "id": 124298,
-      "name": "Rishi Sharma",
-      "job_title": "A319 Captain",
-      "employer": "British Airways PLC",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "B787",
-        "ICAO",
-        "Captain",
-        "A319",
-        "A321",
-        "United Kingdom"
-      ]
-    },
-    {
-      "id": 137337,
-      "name": "Mohammad Aljarrah",
-      "job_title": "Logistics & Sales Operations Senior Officer",
-      "employer": "Pharma International Company (Axantia Group)",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Jordanian"
-      ]
-    },
-    {
-      "id": 142907,
-      "name": "Mayank  Kumar",
-      "job_title": "University Group Projects & Collaborative Teamwork",
-      "employer": "University of Hertfordshire",
-      "work_type": "Operations, Managment",
-      "skills": []
-    },
-    {
-      "id": 122531,
-      "name": "Kevin Cannon",
-      "job_title": "Captain",
-      "employer": "Unknown",
-      "work_type": "Flight Deck",
-      "skills": [
-        "ICAO",
-        "Captain",
-        "Indian"
-      ]
-    },
-    {
-      "id": 128371,
-      "name": "Heni Susilowati",
-      "job_title": "Flight Attendant",
-      "employer": "Cathay Pacific",
-      "work_type": "Cabin Crew",
-      "skills": [
-        "Main Crew",
-        "Chinese"
-      ]
-    },
-    {
-      "id": 139481,
-      "name": "Mohamed Elsayed",
-      "job_title": "Business Development Manager",
-      "employer": "FAST FORWARD LOGISTICS COMPANY",
-      "work_type": "Managment",
-      "skills": [
-        "Egyptian"
-      ]
-    },
-    {
-      "id": 134499,
-      "name": "Widi Armiadi",
-      "job_title": "B737-800 Captain",
-      "employer": "Max Air",
-      "work_type": "Flight Deck",
-      "skills": [
-        "B737-NG",
-        "ICAO",
-        "Captain",
-        "B737-800",
-        "Iraqi"
-      ]
-    },
-    {
-      "id": 73691,
-      "name": "Martin Wong",
-      "job_title": "Operations / Project Executive",
-      "employer": "Unknown",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Hong Konger"
-      ]
-    },
-    {
-      "id": 139983,
-      "name": "Saleh  Alghamdi",
-      "job_title": "Pilot",
-      "employer": "Prince Sultan Air Base",
-      "work_type": "Flight Deck",
-      "skills": [
-        "A320",
-        "ICAO",
-        "A318",
-        "A321"
-      ]
-    },
-    {
-      "id": 137650,
-      "name": "Umair Khan",
-      "job_title": "Senior Store Officer",
-      "employer": "CHERAT PACKAGING LIMITED",
-      "work_type": "Operations, Managment",
-      "skills": [
-        "Pakistani"
+        "United States of America"
       ]
     }
   ]
